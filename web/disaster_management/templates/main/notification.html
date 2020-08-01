@@ -26,6 +26,35 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Notifications will be shown here..!!
-    </h1>
+<div class="container">
+    <div id = "notf_list">
+        {% if not notifications %}
+            <h4>No notifications</h4>
+        {% else %}
+            {% for x in notifications %}
+                {% if forloop.counter|divisibleby:2  == 0 %}
+                    <div class="card text-white bg-dark mb-3" style="width: 80%;">
+                {% else %}    
+                    <div class="card bg-light mb-3" style="width: 80%;">
+                {% endif %}
+                    <div class="card-header">
+                        {% if x.name %}
+                            Notification for <b>{{x.name}}</b>
+                        {% else %}
+                            Notification for <b>{{notfLocationName}}</b>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                      <h5 class="card-title">{{x.message}}</h5>
+                      <p class="card-text">{{x.date}}</p>
+                    </div>
+                  </div>
+            {% endfor %}
+            <script>
+                lastNotification = "{{ notifications.0.date }}";
+            </script>
+        
+        {% endif %}
+    </div>
+</div>
 {% endblock %}
