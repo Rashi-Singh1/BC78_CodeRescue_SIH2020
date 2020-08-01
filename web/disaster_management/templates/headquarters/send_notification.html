@@ -91,7 +91,57 @@
 
 		<div class="main">
 			<main class="content">
-                
+        <div class="container-fluid p-0">
+
+					<div class="row mb-2 mb-xl-3">
+						<div class="col-auto d-none d-sm-block">
+							<h3><strong>Send Notification</strong></h3>
+						</div>
+                    </div>
+                    <hr>
+                    <div class="container">
+                        <form method="POST" action="{% url 'main:send_notification' %}">
+                            {% csrf_token %}
+
+                            <input type="radio" checked id="disaster_wise" name="is_disaster" value="disaster_wise" onclick="hideLocations()">
+                            <label for="disaster_wise">Disaster Wise</label><br>
+                            <input type="radio" id="location_wise" name="is_disaster" value="location_wise" onclick="hideDisasters()">
+                            <label for="location_wise">Location Wise</label><br>
+
+                        <div id="disaster_wise_names">
+                            <label for="active_disasters">Disaster Name: </label><br>
+                            <select id="active_disasters" name="active_disasters">
+                            {% for disaster in active_disasters %}
+                                <option value = "{{disaster.id}}"> {{disaster.name}}</option>
+                            {% endfor %}
+                            </select>
+                            <br><br>
+
+                        </div>
+
+                        <div id="location_wise_names">
+                            <label for="location_names">Location Name: </label><br>
+                            <select id="location_names" name="location_names">
+                            {% for location in location_names %}
+                                <option value = "{{location}}"> {{location}}</option>
+                            {% endfor %}
+                            </select>
+                            <br><br>
+                        </div>
+
+
+                        <label for="message">Message To Send:</label><br>
+                        <input type="text" id="message" placeholder="Type your message" name= "message" ><br><br>
+
+                        <input type="submit" value="Submit">
+                        </form>
+
+                        {% if success %}
+                            <button onclick="show_success()" id="success" type="hidden"></button>
+                        {% endif %}
+                    </div>
+
+				</div>
 			</main>
 		</div>
 	</div>
