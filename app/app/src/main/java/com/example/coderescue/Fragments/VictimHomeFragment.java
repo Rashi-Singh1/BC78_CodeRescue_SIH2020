@@ -50,7 +50,7 @@ import static com.mongodb.client.model.Filters.eq;
 
 public class VictimHomeFragment extends Fragment {
 
-    private Button snd, button_send_msg;
+    private soup.neumorphism.NeumorphButton snd, button_send_msg;
 
     ArrayList<VictimHomeCardModel> models = new ArrayList<>();
     VictimHomeCardModel m;
@@ -73,7 +73,7 @@ public class VictimHomeFragment extends Fragment {
 
         prog = root.findViewById(R.id.progressBar2);
         snd = root.findViewById(R.id.snd_msg);
-        button_send_msg = root.findViewById(R.id.button_send_msg);
+//        button_send_msg = root.findViewById(R.id.button_send_msg);
         mRecyclerView = root.findViewById(R.id.recylcerView5);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -83,6 +83,13 @@ public class VictimHomeFragment extends Fragment {
                 button_click();
             }
         });
+//        button_send_msg.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(getActivity(), SendMessageActivity.class);
+//                startActivity(intent);
+//            }
+//        });
         return root;
     }
 

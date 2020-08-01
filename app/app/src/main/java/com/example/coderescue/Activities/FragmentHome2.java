@@ -45,7 +45,6 @@ public class FragmentHome2 extends AppCompatActivity {
         normal_notif = findViewById(R.id.normal_notif);
         tile_victim = findViewById(R.id.tile_victim);
         tile_rescue = findViewById(R.id.tile_rescue);
-        tile_third = findViewById(R.id.tile_third);
         tile_notif = findViewById(R.id.tile_notif);
 
         normal_victim.setOnClickListener(this::onClick);
@@ -53,7 +52,6 @@ public class FragmentHome2 extends AppCompatActivity {
         normal_notif.setOnClickListener(this::onClick);
         tile_victim.setOnClickListener(this::onClick);
         tile_rescue.setOnClickListener(this::onClick);
-        tile_third.setOnClickListener(this::onClick);
         tile_notif.setOnClickListener(this::onClick);
 
         List<Fragment> fragments = getFragments();
@@ -104,7 +102,6 @@ public class FragmentHome2 extends AppCompatActivity {
         List<Fragment> fragments = new ArrayList<Fragment>();
         fragments.add(new VictimHomeFragment());
         fragments.add(new RescueTeamLoginFragment());
-//        fragments.add(new UpdateInfoFragment());
         fragments.add(new VictimNotificationFragment());
 //        fragments.add(new HomeFragment());
         return fragments;

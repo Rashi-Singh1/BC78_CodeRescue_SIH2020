@@ -105,7 +105,6 @@ public class VictimHomeActivity extends AppCompatActivity {
         }
     }
 
-
     private void getCurrentLocation(){
         prog.setVisibility(View.VISIBLE);
         LocationRequest locationRequest = new LocationRequest();

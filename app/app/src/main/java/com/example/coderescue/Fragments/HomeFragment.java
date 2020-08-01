@@ -18,11 +18,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.coderescue.Activities.CameraWithGoogleMapsActivity;
+import com.example.coderescue.Activities.GoogleMapActivity;
 import com.example.coderescue.Activities.RescueTeamLoginActivity;
 import com.example.coderescue.Activities.VictimHomeActivity;
 import com.example.coderescue.Activities.VictimNotifications;
 import com.example.coderescue.Adapters.SectionsPagerAdapter;
 import com.example.coderescue.R;
+import com.example.coderescue.navar.NavActivity;
+import com.example.coderescue.navar.PoiBrowserActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.mongodb.stitch.android.core.Stitch;
@@ -214,20 +218,16 @@ public class HomeFragment extends AppCompatActivity {
 
         normal_victim = findViewById(R.id.normal_victim);
         normal_rescue = findViewById(R.id.normal_rescue);
-//        normal_third = findViewById(R.id.normal_third);
         normal_notif = findViewById(R.id.normal_notif);
         tile_victim = findViewById(R.id.tile_victim);
         tile_rescue = findViewById(R.id.tile_rescue);
-        tile_third = findViewById(R.id.tile_third);
         tile_notif = findViewById(R.id.tile_notif);
 
         normal_victim.setOnClickListener(this::onClick);
         normal_rescue.setOnClickListener(this::onClick);
-//        normal_third.setOnClickListener(this::onClick);
         normal_notif.setOnClickListener(this::onClick);
         tile_victim.setOnClickListener(this::onClick);
         tile_rescue.setOnClickListener(this::onClick);
-//        tile_third.setOnClickListener(this::onClick);
         tile_notif.setOnClickListener(this::onClick);
 
         enableAnonymousAuth();
@@ -296,6 +296,10 @@ public class HomeFragment extends AppCompatActivity {
                 Log.d("home page", "rescue click triggered");
                 viewPager.setCurrentItem(1, true);
                 break;
+            case R.id.tile_third:
+                Log.d("home page", "third click triggered");
+                viewPager.setCurrentItem(2, true);
+                break;
             case R.id.normal_notif:
             case R.id.tile_notif:
                 Log.d("home page", "notif click triggered");
@@ -312,6 +316,7 @@ public class HomeFragment extends AppCompatActivity {
 
         tile_rescue.setVisibility(View.INVISIBLE);
         normal_rescue.setVisibility(View.VISIBLE);
+
 
         tile_notif.setVisibility(View.INVISIBLE);
         normal_notif.setVisibility(View.VISIBLE);
