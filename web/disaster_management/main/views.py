@@ -93,9 +93,6 @@ def headquarters_dashboard(request):
         if data1['isactive'] == 1:
             active_disasters.append(data1)
 
-    for data1 in data :
-        rescue_teams_names[data1["name"]] = data1["rescue_teams_usernames"]
-
     for location in locations :
         location_names.append(location)
 
