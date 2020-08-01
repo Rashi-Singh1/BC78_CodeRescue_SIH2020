@@ -72,7 +72,6 @@ def notifications(request, loc_no):
     print("connected")
     data = db.find().sort("date", pymongo.DESCENDING)
     allnotfs = list(data)
-    
     if 0 <= loc_no < len(locations):
         notfLocation = locations[loc_no]
     else:
@@ -82,19 +81,19 @@ def notifications(request, loc_no):
     for notf in allnotfs:
         if 'location' in notf and notfLocation in notf['location']:
             notf['date'] = notf['date'].strftime('%d/%m/%Y %H:%M:%S')
-            # date_time_obj = datetime. strptime(date_time_str, '%d/%m/%y %H:%M:%S')
             notfs.append(notf)
 
     if notfs != []:
         request.session['lastNotification'] = notfs[0]['date']
-
+    
     context = {
         'notifications' : notfs,
-        'notfLocIndex' : loc_no
+        'notfLocIndex' : loc_no,
+        'notfLocationName' : locations[loc_no]
     }
 
     if request.session.get('isHeadquartersLoggedIn' , None) == 1 :
-        context['isHeadquartersLoggedIn'] = 1
+        context['isHeadquartersLoggedIn']=1
 
     return render(request , 'main/notification.html' , context)
 
