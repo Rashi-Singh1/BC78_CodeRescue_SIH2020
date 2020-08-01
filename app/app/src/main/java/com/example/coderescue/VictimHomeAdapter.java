@@ -65,6 +65,88 @@ public class VictimHomeAdapter extends RecyclerView.Adapter<VictimHomeHolder>{
         myHolder.setItemClickListener(new ItemClickListener() {
             @Override
             public void onItemClick(View v, int pos) {
+                mongoClient = HomeFragment.client.getServiceClient(RemoteMongoClient.factory, "mongodb-atlas");
+
+                final RemoteMongoCollection<Document> teams = mongoClient.getDatabase("main").getCollection("victimsneedhelp");
+
+                RemoteFindIterable findResults = teams.find(eq("disaster_id", dis_id));
+                Task <List<Document>> itemsTask = findResults.into(new ArrayList<Document>());
+                itemsTask.addOnCompleteListener(new OnCompleteListener <List<Document>> () {
+                    @Override
+                    public void onComplete(@NonNull Task<List<Document>> task) {
+                        if (task.isSuccessful()) {
+                            List<Document> items = task.getResult();
+                            int numDocs = items.size();
+                            if(numDocs==0){
+                                Log.d("Doesn't exist", "Insert");
+                                final RemoteMongoCollection<Document> victimneedhelp = mongoClient.getDatabase("main").getCollection("victimsneedhelp");
+                                Document newItem = new Document()
+                                        .append("disaster_id", dis_id)
+                                        .append("victims", Arrays.asList(
+                                                new Document()
+                                                        .append("latitude", lat)
+                                                        .append("longitude", longi)
+                                                        .append("count",1)
+                                                        .append("isactive", 1)
+                                        ));
+
+
+                                final Task<RemoteInsertOneResult> insertTask = victimneedhelp.insertOne(newItem);
+                                insertTask.addOnCompleteListener(new OnCompleteListener<RemoteInsertOneResult>() {
+                                    @Override
+                                    public void onComplete(@com.mongodb.lang.NonNull Task <RemoteInsertOneResult> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.d("app", String.format("successfully inserted item with id %s",
+                                                    task.getResult().getInsertedId()));
+                                        } else {
+                                            Log.e("app", "failed to insert document with: ", task.getException());
+                                        }
+                                    }
+                                });
+                            }
+                            else{
+                                System.out.println(items.get(0));
+                                Document first = items.get(0);
+                                final RemoteMongoCollection<Document> victimneedhelp = mongoClient.getDatabase("main").getCollection("victimsneedhelp");
+                                List<Document> temp = (List<Document>)first.get("victims");
+                                Document newvic = new Document().append("latitude",lat).append("longitude",longi).append("count",1).append("isactive",1);
+                                temp.add(newvic);
+                                Log.d("Exists", "update");
+                                Document filterDoc = new Document().append("disaster_id", dis_id);
+                                Document updateDoc = new Document().append("$set",
+                                        new Document()
+                                                .append("disaster_id", dis_id)
+                                                .append("victims", temp)
+                                );
+
+                                final Task<RemoteUpdateResult> updateTask =
+                                        victimneedhelp.updateOne(filterDoc, updateDoc);
+                                updateTask.addOnCompleteListener(new OnCompleteListener <RemoteUpdateResult> () {
+                                    @Override
+                                    public void onComplete(@NonNull Task <RemoteUpdateResult> task) {
+                                        if (task.isSuccessful()) {
+                                            long numMatched = task.getResult().getMatchedCount();
+                                            long numModified = task.getResult().getModifiedCount();
+                                            Log.d("app", String.format("successfully matched %d and modified %d documents",
+                                                    numMatched, numModified));
+                                        } else {
+                                            Log.e("app", "failed to update document with: ", task.getException());
+                                        }
+                                    }
+                                });
+                            }
+                            Context context = c
+                                    .getApplicationContext();
+                            CharSequence text = "Request Sent. Rescue Team Will Arrive as soon as possible!";
+                            int duration = Toast.LENGTH_LONG;
+
+                            Toast toast = Toast.makeText(context, text, duration);
+                            toast.show();
+                        } else {
+                            Log.e("app", "Failed to count documents with exception: ", task.getException());
+                        }
+                    }
+                });
 
 
             }
