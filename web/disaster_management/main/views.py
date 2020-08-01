@@ -49,10 +49,10 @@ def index(request , latitude='' , longitude=''):
             data[disaster["name"]] = disaster
 
     context['data'] = data
-    
+
     if request.session.get('isHeadquartersLoggedIn' , None) == 1 :
         context['isHeadquartersLoggedIn']=1
-        
+
     return render(request , 'main/index.html' , context)
 
 def getUserLocation(request):
@@ -66,8 +66,36 @@ def getUserLocation(request):
     return HttpResponseRedirect(reverse('main:index'))
 
 
-def notifications(request, loc_no):   
-    context={}     
+def notifications(request, loc_no):
+    client = connect()
+    db = client.main.notification
+    print("connected")
+    data = db.find().sort("date", pymongo.DESCENDING)
+    allnotfs = list(data)
+    
+    if 0 <= loc_no < len(locations):
+        notfLocation = locations[loc_no]
+    else:
+        HttpResponseRedirect(reverse('main:index'))
+
+    notfs = []
+    for notf in allnotfs:
+        if 'location' in notf and notfLocation in notf['location']:
+            notf['date'] = notf['date'].strftime('%d/%m/%Y %H:%M:%S')
+            # date_time_obj = datetime. strptime(date_time_str, '%d/%m/%y %H:%M:%S')
+            notfs.append(notf)
+
+    if notfs != []:
+        request.session['lastNotification'] = notfs[0]['date']
+
+    context = {
+        'notifications' : notfs,
+        'notfLocIndex' : loc_no
+    }
+
+    if request.session.get('isHeadquartersLoggedIn' , None) == 1 :
+        context['isHeadquartersLoggedIn'] = 1
+
     return render(request , 'main/notification.html' , context)
 
 
@@ -101,13 +129,12 @@ def headquarters_dashboard(request):
         "all_disasters" : all_disasters ,
         "location_names": location_names ,
         "success" : success ,
-        "rescue_teams_names" : rescue_teams_names,
         "active_disasters" : active_disasters
     }
 
     if request.session.get('isHeadquartersLoggedIn' , None) == 1 :
         context['isHeadquartersLoggedIn']=1
-        
+
     return render( request , 'headquarters/admin_dashboard.html' , context )
 
 
@@ -134,7 +161,7 @@ def all_disasters(request):
 
     if request.session.get('isHeadquartersLoggedIn' , None) == 1 :
         context['isHeadquartersLoggedIn']=1
-        
+
     return render(request, 'headquarters/disasters.html', context)
 
 def change_active_status(request):
@@ -208,3 +235,10 @@ def headquartersLogout(request):
     if request.session.get('isHeadquartersLoggedIn' , None) == 1 :
         del request.session['isHeadquartersLoggedIn']
     return HttpResponseRedirect(reverse('main:index'))
+
+def send_notification(request):
+
+    context = {
+    }
+
+    return render(request, 'headquarters/send_notification.html', context)
