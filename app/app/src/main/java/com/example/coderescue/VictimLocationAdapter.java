@@ -104,6 +104,7 @@ public class VictimLocationAdapter extends RecyclerView.Adapter<VictimLocationHo
                                         Document notactive = new Document()
                                                 .append("latitude", lat)
                                                 .append("longitude", longi)
+                                                .append("count",1)
                                                 .append("isactive", 0);
                                         temp2.add(notactive);
                                     }
@@ -145,11 +146,6 @@ public class VictimLocationAdapter extends RecyclerView.Adapter<VictimLocationHo
                     }
                 });
                 System.out.println("jai shree ram");
-//                String uri = String.format(Locale.ENGLISH, "geo:%f,%f", lat, longi);
-                String geoUri = "http://maps.google.com/maps?q=loc:" + lat + "," + longi + " (" + "label temp" + ")";
-
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(geoUri));
-                c.startActivity(intent);
                 //INTENT OBJ
 
 //                Intent iii=new Intent(c, MapsActivity.class);
