@@ -28,6 +28,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.coderescue.Classes.NetworkConnectivity;
+import com.example.coderescue.Classes.ReceiveMessageUtility;
+import com.example.coderescue.Classes.SendMessageUtility;
 import com.example.coderescue.Fragments.HomeFragment;
 import com.example.coderescue.VictimLocationAdapter;
 import com.example.coderescue.VictimLocationCardModel;
@@ -84,6 +86,8 @@ public class RescueTeamDashboard extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rescue_team_dashboard);
+        speak_msg = findViewById(R.id.voiceBtn3);
+        button_ar_map = findViewById(R.id.button_ar_map);
         button_ar_camera = findViewById(R.id.button_ar_camera);
         flag=0;
 
@@ -103,6 +107,19 @@ public class RescueTeamDashboard extends AppCompatActivity {
         c = this;
         mRecylcerView.setLayoutManager(new LinearLayoutManager(this));
         snd2=findViewById(R.id.snd_msg2);
+        speak_msg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                speak();
+            }
+        });
+        button_ar_map.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RescueTeamDashboard.this, GoogleMapActivity.class);
+                startActivity(intent);
+            }
+        });
         button_ar_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,6 +136,7 @@ public class RescueTeamDashboard extends AppCompatActivity {
         Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show();
 
         if(!NetworkConnectivity.isInternetAvailable(getApplicationContext())){
+//            SendMessageUtility.sendMessage(getApplicationContext(), RescueTeamDashboard.this, "testing send message");
         }
         else{
             if (ContextCompat.checkSelfPermission(
@@ -131,6 +149,28 @@ public class RescueTeamDashboard extends AppCompatActivity {
             }
         }
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case SendMessageUtility.REQUEST_CODE_SEND_MESSAGE_PERMISSION:
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    if(!NetworkConnectivity.isInternetAvailable(getApplicationContext())){
+                        SendMessageUtility.sendMessage(getApplicationContext(), RescueTeamDashboard.this, "testing send message");
+                    }
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "You don't have the required permissions for sending text messages", Toast.LENGTH_SHORT).show();
+                }
+            case ReceiveMessageUtility.REQUEST_CODE_RECEIVE_MESSAGE_PERMISSION:
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    //TODO: add code here
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "You don't have the required permissions for receiving text messages", Toast.LENGTH_SHORT).show();
+                }
+        }
+    }
+
     private void getCurrentLocation(){
         prog.setVisibility(View.VISIBLE);
         LocationRequest locationRequest = new LocationRequest();
@@ -322,6 +362,40 @@ public class RescueTeamDashboard extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void speak(){
+
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Hi speak something");
+
+        try {
+            startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT);
+        }
+        catch (Exception e){
+            Toast.makeText(RescueTeamDashboard.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case REQUEST_CODE_SPEECH_INPUT:{
+                if (resultCode == -1 && null!=data){
+                    ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    String spoken = result.get(0);
+                    if(spoken.contains("near")){
+                        flag=1;
+                        snd2.performClick();
+                    }
+                }
+            }
+        }
     }
 
     public void getDisastername(){
