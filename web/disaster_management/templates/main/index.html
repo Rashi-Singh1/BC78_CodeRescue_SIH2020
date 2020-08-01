@@ -11,7 +11,6 @@
      google.charts.load('current', {'packages':['line']});
     </script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js" type="text/javascript"></script>
-
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
@@ -32,27 +31,7 @@
     border-radius: 10px;
     z-index:2;
   }
-  #notf_list{
-    width: 300px;
-    z-index: 3;
-    position: absolute;
-    right: 10px;
-  }
-  #peopleAffected{
-    width: 80% !important;
-    margin:auto;
-    margin-top:5%;
-  }
-  #peopleKilled{
-    width: 80% !important;
-    margin:auto;
-    margin-top:5%;
-
-  }
-  .modal-dialog{
-    min-width:1000px;
-    /* background-color: yellow; */
-  }
+ 
   .dropdown-menu{
     width:300px;
     max-height: 400px;
@@ -65,55 +44,13 @@
   .jumbotron {
     margin-bottom: 0px;
   }
-  #notificationHeadingToast{
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+  
 </style>
 {% endblock %}
 
 {% block content %}
 
-<div id = "notf_list">
-</div>
     <br/>
-<button style="display: none;" id="launchModalButton" type="button" class="btn btn-primary" data-toggle="modal" data-target="#nearestSafeHouseModal">
-  Launch demo modal
-</button>
-<div  class="modal fade" id="nearestSafeHouseModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        {% if nearest_safe_house.latitude != 'undefined' %}
-        <h5 class="modal-title" id="exampleModalLabel">Nearest Safe House from your location</h5>
-        {% else %}
-        <h5 class="modal-title" id="exampleModalLabel">Note</h5>
-        {%endif%}
-        
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        {% if nearest_safe_house.latitude != 'undefined' %}
-        <div  style="width:100%; height:500px" id="nearestSafeHouseMap"></div>
-        {% else %}
-        <h4 class="jumbotron"> Sorry, no safe houses found near your location</h4>
-        {%endif%}
-      </div>
-      {% if nearest_safe_house.latitude != 'undefined' %}
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close Directions</button>
-      </div>
-      {% else %}
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-      {%endif%}
-
-    </div>
-  </div>
-</div>
 
 <div class="container">
 <div class="row">
@@ -145,13 +82,6 @@
   </form>
   </div>
 
-      <!-- <br><br>
-      {% if locationIndex %}
-          <button onclick="location.href='{% url 'main:notifications' locationIndex %}'"> Check Notifications </button>
-      {% endif %}
-      <a href="{% url 'main:find_safe_house' '1' '1' %}" id="nearest_safe_house_button" class="btn  btn-primary">Find Nearest Safe House</a> -->
-
-
   <div class="col-md-6">
     <div class="dropdown">
       <h5 style="padding: 10px 50px 10px 50px;
@@ -177,23 +107,7 @@
 </div>
 </div>
 
-    <!-- <div id="disaster_wise_names">
-        <label for="disaster_names">Disaster Name: </label><br>
-        <select id="disaster_names" onchange="changeMapInfo()" name="disaster_names">
-          <option value = "all_disasters"> All</option>
-          {% for data_key , data_values in data.items %}
-            <option value = "{{data_values.id}}"> {{data_key}}</option>
-          {% endfor %}
-        </select>
-        <br><br>
-      </div> -->
-
       <div style="height:750px;width:90%;" id="mapid"></div>
-      <div style="width:700px;" class="class"id="peopleAffected"></div>
-      <div style="width:700px;" class="class"id="peopleKilled"></div>
-
-
-
 
     <script>
       var positionUser;
@@ -202,32 +116,7 @@
           'latitude': position.coords.latitude,
           'longitude': position.coords.longitude
         };
-      var url_mask = "{% url 'main:find_safe_house' '12345' '6789' %}".replace(/12345/, position.coords.latitude.toString()).replace(/6789/, position.coords.longitude.toString());
-      // document.getElementById("nearest_safe_house_button").setAttribute('href' , url_mask);
-      document.getElementById("find_nearest_safe_house_link").setAttribute('href' , url_mask);
-
-      function loadMapNearestSafeHouse(){
-          var map = L.map('nearestSafeHouseMap');
-
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-              attribution: '© OpenStreetMap contributors'
-          }).addTo(map);
-          {% if nearest_safe_house  and nearest_safe_house.latitude != 'undefined' %}
-          console.log(positionUser.latitude + " ## " +positionUser.longitude);
-          console.log({{nearest_safe_house.latitude}} + " %% "+   {{nearest_safe_house.longitude}});
-          L.Routing.control({
-              waypoints: [
-                  L.latLng(positionUser.latitude,positionUser.longitude ),
-                  L.latLng({{nearest_safe_house.latitude}},  {{nearest_safe_house.longitude}})
-              ],
-              routeWhileDragging: true
-          }).addTo(map);
-          {% endif %}
-      };
-
       });
-      // {% if disaster_values.isactive == 1 %}
-//    {%endif%}
 
       function getLocation() {
         console.log("Getting position...")
@@ -307,8 +196,6 @@
           }
         function dropdownButtonClicked(value,value2){
           document.getElementById('dropdownMenuMenu').innerText= value2;
-          drawChartPeopleAffected(value);
-          drawChartPeopleKilled(value);
           center =[21.853283,81.079102];
           var disaster_name = value;
           console.log(disaster_name);
@@ -345,192 +232,7 @@
       
         }
        
-    function drawChartPeopleAffected(value) {
-
-      var disaster_name = value;
-      var data = new google.visualization.DataTable();
-      var data_for_chart = new google.visualization.DataTable();
-      if( disaster_name == "all_disasters" )
-        return;
-
-      data_for_chart.addColumn('number', 'Day');
-      data_for_chart.addColumn('number', 'Affected');
-      var ctr = 0;
-      for (let [ statistics_key,statistics_value ] of Object.entries(disaster_data[disaster_name]["statistics"] )) {
-        // console.log(statistics_key);
-        if( statistics_key != "total" )
-        {
-          var temp_list =[];
-          temp_list.push(ctr);
-          temp_list.push(statistics_value.affected);
-          ctr++;
-          data_for_chart.addRow(temp_list);
-        }
-      }
     
-      console.log(data_for_chart);
-      var options = {
-        legend:{position:'none'},
-        chart: {
-          title: 'No of people affected by  ' + disaster_data[disaster_name]["name"],
-          subtitle: 'Day Wise'
-        },
-        series:{
-          0: { color: '#43459d' },
-        },
-
-        width: 800,
-        height: 500,
-        axes: {
-          x: {
-            0: {side: 'bottom'}
-          }
-        }
-      };
-      var chartPeopleAffected = new google.charts.Line(document.getElementById('peopleAffected'));
-      chartPeopleAffected.draw(data_for_chart, google.charts.Line.convertOptions(options));
-      return;
-    }
-
-    function drawChartPeopleKilled(value) {
-      var disaster_name = value;
-      var data = new google.visualization.DataTable();
-      var data_for_chart = new google.visualization.DataTable();
-      if( disaster_name == "all_disasters" )
-        return;
-
-      data_for_chart.addColumn('number', 'Day');
-      data_for_chart.addColumn('number', 'Deaths');
-
-      var ctr = 0;
-
-      for (let [ statistics_key,statistics_value ] of Object.entries(disaster_data[disaster_name]["statistics"] )) {
-        // console.log(statistics_key);
-        if( statistics_key != "total" )
-        {
-          var temp_list =[];
-          temp_list.push(ctr);
-          temp_list.push(statistics_value.deaths);
-          ctr++;
-          data_for_chart.addRow(temp_list);
-        }
-      }
-      console.log(data_for_chart);
-      var options = {
-        legend:{position:'none'},
-        series:{
-          0: { color: '#e2431e' },
-        },
-        chart: {
-          title: 'No of people who lost their lives by  ' + disaster_data[disaster_name]["name"],
-          subtitle: 'Day Wise'
-        },
-        width: 800,
-        height: 500,
-        axes: {
-          x: {
-            0: {side: 'bottom'}
-          }
-        }
-      };
-
-      var chartPeopleKilled = new google.charts.Line(document.getElementById('peopleKilled'));
-      chartPeopleKilled.draw(data_for_chart, google.charts.Line.convertOptions(options));
-      return;
-    }
-    // var lastNotification = new Date();
-    // lastNotification = lastNotification.getDate() + "/" + (lastNotification.getMonth()+1).toString()
-    //     + "/" + lastNotification.getFullYear() + " " + lastNotification.getHours() + ":" +
-    //     lastNotification.getMinutes() + ":" + lastNotification.getSeconds();
-
-    setInterval(function () {
-        console.log('Called new notifications at : ' + new Date());
-        {% if locationIndex %}
-        $.ajax({
-            type: 'GET',
-            url: "{% url 'main:get_new_notifications' locationIndex %}",
-            success: function (response) {
-                // console.log(response);
-                // console.log(lastNotification);
-                var newnotfs = response["new_notifications"];
-                // var constantDate = new Date(lastNotification);
-                var constantDate = moment( '{{request.session.lastNotification}}' , 'DD-MM-YYYY HH:mm:ss').toDate();
-                console.log(constantDate);
-
-                for (notf in newnotfs) {
-                    // console.log(newnotfs[notf]['date']);
-                    // console.log(newnotfs[notf]);
-                    // var newDate = Date.parse(newnotfs[notf]['date'], "dd-MM-yyyy HH:mm:ss");
-                    var newDate = moment( newnotfs[notf]['date'] , 'DD-MM-YYYY HH:mm:ss').toDate();
-
-                    // var newDate = new Date(newnotfs[notf]['date']);
-                    console.log('{{request.session.lastNotification}}');
-                    console.log(newnotfs[notf]['date']);
-                    console.log(newDate);
-                    console.log(constantDate);
-                    var momentDate = moment('2015-01-16 22:15:00', 'YYYY-MM-DD HH:mm:ss');
-                    var jsDate = momentDate.toDate();
-                    console.log("hello");
-
-                    console.log(jsDate);
-                    var htmlToPrepend = '<div class="toast" data-autohide="false"><div class="toast-header"><svg class=" rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"><rect fill="#007aff" width="100%" height="100%" /></svg>'+
-                              '<strong id="notificationHeadingToast" class="mr-auto">Notification for ';
-                        if( newnotfs[notf].name ){
-                        htmlToPrepend += newnotfs[notf].name;
-                        }
-                        else{
-                            htmlToPrepend += '{{locationName}}';
-                        }
-                        htmlToPrepend +='</strong>'+
-                              // '<small class="text-muted">Just Now</small>'+
-                              '<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="toast-body">'+
-                                newnotfs[notf]['message']+
-                              '</div></div>';
-                    if( newDate > constantDate ) {
-                        $('#notf_list').prepend(
-                            // '<li><h4>'+ JSON.stringify(newnotfs[notf]) +'</h4></li>'
-                            htmlToPrepend)
-                        // lastNotification = newnotfs[notf]['date'];
-                    }
-                    $(".toast").toast('show');
-                }
-            },
-            error: function (response) {
-                console.log("dsadsadsaasdsadsadsadasads!@!@!@!@!@!!@!@!");
-
-                //console.log(response)
-            }
-        })
-        {% endif %}
-    },10000);
-    $(window).on('shown.bs.modal', function() {
-    $('#code').modal('show');
-    var map = L.map('nearestSafeHouseMap');
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-    {% if nearest_safe_house and nearest_safe_house.latitude != 'undefined'  %}
-    console.log(positionUser.latitude + " ## " +positionUser.longitude);
-    console.log({{nearest_safe_house.latitude}} + " %% "+   {{nearest_safe_house.longitude}});
-    L.Routing.control({
-        waypoints: [
-            L.latLng(positionUser.latitude,positionUser.longitude ),
-            L.latLng({{nearest_safe_house.latitude}},  {{nearest_safe_house.longitude}})
-        ],
-        routeWhileDragging: true
-    }).addTo(map);
-    {% endif %}
-    });
-    {% if nearest_safe_house %}
-    setTimeout(function () {
-      $( "#launchModalButton" ).click();},1000);
-    {% endif %}
-    $(document).ready(function(){
- 
-});
-
-
 function dropdownLocationClicked(location){
   $('#location').val(location);
   $('#locform').submit();

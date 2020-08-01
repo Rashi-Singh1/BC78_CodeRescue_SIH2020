@@ -70,45 +70,28 @@ input[type=text]:focus {
 {% block content %}
 	<div class="wrapper">
 		<nav id="sidebar" class="sidebar">
-			<div class="sidebar-content js-simplebar">
-				<!-- <a class="sidebar-brand" href="index.html"> -->
+            <div class="sidebar-content js-simplebar">
+                <!-- <a class="sidebar-brand" href="index.html"> -->
                     <span class="align-middle">Dashboard</span>
                 <!-- </a> -->
-
-				<ul class="sidebar-nav">
-					<li class="sidebar-item">
-						<a class="sidebar-link" href="{% url 'main:headquarters_dashboard' %}">
-                        <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Manage Active Disasters</span>
-                        </a>
-					</li>
-
-					<li class="sidebar-item active">
-						<a class="sidebar-link" href="{% url 'main:all_disasters' %}">
+    
+                <ul class="sidebar-nav">
+               
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{% url 'main:all_disasters' %}">
                         <i class="align-middle" data-feather="user"></i> <span class="align-middle">All Disasters</span>
                         </a>
-					</li>
-
-					<li class="sidebar-item">
-						<a class="sidebar-link" href="{% url 'main:add_disaster' %}">
+                    </li>
+    
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{% url 'main:add_disaster' %}">
                         <i class="align-middle" data-feather="settings"></i> <span class="align-middle">Add Disaster</span>
                         </a>
-					</li>
-
-					<li class="sidebar-item">
-						<a class="sidebar-link" href="{% url 'main:add_rescue_team' %}">
-                        <i class="align-middle" data-feather="credit-card"></i> <span class="align-middle">Add Rescue Team</span>
-                        </a>
-					</li>
-
-					<li class="sidebar-item">
-						<a class="sidebar-link" href="{% url 'main:send_notification' %}">
-                        <i class="align-middle" data-feather="book"></i> <span class="align-middle">Send Notification</span>
-                        </a>
-					</li>
+                    </li>
+    
                 </ul>
-					
-			</div>
-		</nav>
+            </div>
+        </nav>
 
 		<div class="main">
 			<main class="content">
