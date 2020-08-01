@@ -235,3 +235,10 @@ def headquartersLogout(request):
     if request.session.get('isHeadquartersLoggedIn' , None) == 1 :
         del request.session['isHeadquartersLoggedIn']
     return HttpResponseRedirect(reverse('main:index'))
+
+def send_notification(request):
+
+    context = {
+    }
+
+    return render(request, 'headquarters/send_notification.html', context)
