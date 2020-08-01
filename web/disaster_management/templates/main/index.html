@@ -30,6 +30,12 @@
         margin:auto;
         margin-top:5%;
     }
+
+    #peopleKilled{
+        width: 80% !important;
+        margin:auto;
+        margin-top:5%;
+    }
     
     #mapid{
         margin:auto;
@@ -115,6 +121,8 @@
 
 <div style="height:750px;width:90%;" id="mapid"></div>
 <div style="width:700px;" class="class"id="peopleAffected"></div>
+<div style="width:700px;" class="class"id="peopleKilled"></div>
+
 
 <script>
     var positionUser;
@@ -209,6 +217,7 @@
         
         // Draw charts
         drawChartPeopleAffected(value);
+        drawChartPeopleKilled(value);
 
         center =[21.853283,81.079102];
         var disaster_name = value;
@@ -290,7 +299,52 @@
         return;
     }
 
+    function drawChartPeopleKilled(value) {
+        var disaster_name = value;
+        var data = new google.visualization.DataTable();
+        var data_for_chart = new google.visualization.DataTable();
+        if( disaster_name == "all_disasters" )
+            return;
 
+        data_for_chart.addColumn('number', 'Day');
+        data_for_chart.addColumn('number', 'Deaths');
+
+        var ctr = 0;
+
+        for (let [ statistics_key,statistics_value ] of Object.entries(disaster_data[disaster_name]["statistics"] )) {
+            // console.log(statistics_key);
+            if( statistics_key != "total" )
+            {
+            var temp_list =[];
+            temp_list.push(ctr);
+            temp_list.push(statistics_value.deaths);
+            ctr++;
+            data_for_chart.addRow(temp_list);
+            }
+        }
+        console.log(data_for_chart);
+        var options = {
+            legend:{position:'none'},
+            series:{
+            0: { color: '#e2431e' },
+            },
+            chart: {
+            title: 'No of people who lost their lives by  ' + disaster_data[disaster_name]["name"],
+            subtitle: 'Day Wise'
+            },
+            width: 800,
+            height: 500,
+            axes: {
+            x: {
+                0: {side: 'bottom'}
+            }
+            }
+        };
+
+        var chartPeopleKilled = new google.charts.Line(document.getElementById('peopleKilled'));
+        chartPeopleKilled.draw(data_for_chart, google.charts.Line.convertOptions(options));
+        return;
+    }
        
     
     function dropdownLocationClicked(location){
