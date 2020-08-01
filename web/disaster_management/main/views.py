@@ -187,6 +187,8 @@ def add_disaster(request):
     context['location_names'] = location_names
     print(context)
     if request.method == "GET":
+        if request.session.get('isHeadquartersLoggedIn' , None) == 1 :
+            context['isHeadquartersLoggedIn']=1
         return render(request, 'headquarters/add_disaster.html',context)
 
     elif request.method == "POST":
@@ -225,6 +227,7 @@ def add_disaster(request):
         }
         print(data)
         db.insert_one(data)
+        
         return HttpResponseRedirect(reverse('main:all_disasters'))
 
 def headquartersLogout(request):
