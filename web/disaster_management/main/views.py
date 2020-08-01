@@ -49,10 +49,10 @@ def index(request , latitude='' , longitude=''):
             data[disaster["name"]] = disaster
 
     context['data'] = data
-    
+
     if request.session.get('isHeadquartersLoggedIn' , None) == 1 :
         context['isHeadquartersLoggedIn']=1
-        
+
     return render(request , 'main/index.html' , context)
 
 def getUserLocation(request):
@@ -66,8 +66,8 @@ def getUserLocation(request):
     return HttpResponseRedirect(reverse('main:index'))
 
 
-def notifications(request, loc_no):   
-    context={}     
+def notifications(request, loc_no):
+    context={}
     return render(request , 'main/notification.html' , context)
 
 
@@ -93,9 +93,6 @@ def headquarters_dashboard(request):
         if data1['isactive'] == 1:
             active_disasters.append(data1)
 
-    for data1 in data :
-        rescue_teams_names[data1["name"]] = data1["rescue_teams_usernames"]
-
     for location in locations :
         location_names.append(location)
 
@@ -104,13 +101,12 @@ def headquarters_dashboard(request):
         "all_disasters" : all_disasters ,
         "location_names": location_names ,
         "success" : success ,
-        "rescue_teams_names" : rescue_teams_names,
         "active_disasters" : active_disasters
     }
 
     if request.session.get('isHeadquartersLoggedIn' , None) == 1 :
         context['isHeadquartersLoggedIn']=1
-        
+
     return render( request , 'headquarters/admin_dashboard.html' , context )
 
 
@@ -137,7 +133,7 @@ def all_disasters(request):
 
     if request.session.get('isHeadquartersLoggedIn' , None) == 1 :
         context['isHeadquartersLoggedIn']=1
-        
+
     return render(request, 'headquarters/disasters.html', context)
 
 def change_active_status(request):
