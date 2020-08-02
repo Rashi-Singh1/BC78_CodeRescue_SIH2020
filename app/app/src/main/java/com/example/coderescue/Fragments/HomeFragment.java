@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.coderescue.Activities.CameraWithGoogleMapsActivity;
 import com.example.coderescue.Activities.GoogleMapActivity;
 import com.example.coderescue.Activities.RescueTeamLoginActivity;
 import com.example.coderescue.Activities.UpdateInfoActivity;

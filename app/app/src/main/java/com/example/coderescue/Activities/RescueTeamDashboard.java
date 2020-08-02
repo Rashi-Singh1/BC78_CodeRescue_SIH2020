@@ -77,7 +77,7 @@ public class RescueTeamDashboard extends AppCompatActivity {
     private static final int REQUEST_CODE_LOCATION_PERMISSION = 1;
     private static final int REQUEST_CODE_SPEECH_INPUT = 1000;
     public static String state;
-    soup.neumorphism.NeumorphButton button_ar_map, button_ar_camera;
+    soup.neumorphism.NeumorphButton button_ar_camera;
 
 
     @Override
@@ -85,7 +85,6 @@ public class RescueTeamDashboard extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rescue_team_dashboard);
 //        speak_msg = findViewById(R.id.voiceBtn3);
-        button_ar_map = findViewById(R.id.button_ar_map);
         button_ar_camera = findViewById(R.id.button_ar_camera);
         flag=0;
 
@@ -109,13 +108,13 @@ public class RescueTeamDashboard extends AppCompatActivity {
         c = this;
         mRecylcerView.setLayoutManager(new LinearLayoutManager(this));
         snd2=findViewById(R.id.snd_msg2);
-        button_ar_map.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(RescueTeamDashboard.this, GoogleMapActivity.class);
-                startActivity(intent);
-            }
-        });
+//        speak_msg.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                speak();
+//            }
+//        });
+
         button_ar_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,6 +131,7 @@ public class RescueTeamDashboard extends AppCompatActivity {
         Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show();
 
         if(!NetworkConnectivity.isInternetAvailable(getApplicationContext())){
+//            SendMessageUtility.sendMessage(getApplicationContext(), RescueTeamDashboard.this, "testing send message");
         }
         else{
             if (ContextCompat.checkSelfPermission(
