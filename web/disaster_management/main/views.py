@@ -438,5 +438,34 @@ def add_safe_house(request):
 
     elif request.method == "POST":
         print("From received")
-        
+        client = connect()
+        db = client.main.safeHouses
+        data = list(db.find({ "state" : request.POST['location'] }))
+
+        if data == []:
+            stateData = {
+                'state' : request.POST['location'],
+                'safehouse' : [{
+                    'latitude' : request.POST['latitude'],
+                    'longitude' : request.POST['longitude'],
+                    'name' : request.POST['name']
+                }]
+            }
+            print(stateData)
+            db.insert_one(stateData)
+
+        else:
+            stateData = data[0]
+            safehouses = stateData['safehouse']
+            safehouses.append ({
+                'latitude' : request.POST['latitude'],
+                'longitude' : request.POST['longitude'],
+                'name' : request.POST['name']
+            })
+
+            db.update_one (
+                { "state" : request.POST['location'] },
+                { "$set": { "safehouse" : safehouses } }
+            )
+
         return HttpResponseRedirect(reverse('main:all_disasters'))

@@ -96,51 +96,45 @@
                     <hr>
                     <div class="container" style="margin-left: 10em; display: inline-block;">
                         <div class="card" style="width:34em; margin-left: 4em">
-                            <form action="{% url 'main:add_disaster' %}" method="post" style="padding: 1.5em">
+                            <form action="{% url 'main:add_safe_house' %}" method="post" style="padding: 1.5em">
                                 {% csrf_token %}
                                 <div class="form-group row-md-12 mb-3">
                                     <div class="form-inline">
-                                        <label for="disasterName" style="margin-right:4.7em;margin-left: 1em;">Safehouse Name</label>
+                                        <label for="safeHouseName" style="margin-right:4.7em;margin-left: 1em;">Safehouse Name</label>
                                         <input type="text" class="form-control" id="inputName" placeholder="Enter Safehouse name" name="name">
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <label for="disasterCoordinates">Safehouse Coordinates: </label><br />
+                                    <label for="safeHouseCoordinates">Safehouse Coordinates: </label><br />
                                     <div class="form-inline">
-                                        <label for="disasterCoordinates" style="margin-right:9em">Latitude </label>
+                                        <label for="safeHouseCoordinates" style="margin-right:9em">Latitude </label>
                                         <input type="text" class="form-control" id="inputLatitude" placeholder="Enter Latitude" name="latitude">
                                     </div>
                                     <br/>
                                     <div class="form-inline">
-                                        <label for="disasterCoordinates" style="margin-right:8.2em">Longitude </label>
+                                        <label for="safeHouseCoordinates" style="margin-right:8.2em">Longitude </label>
                                         <input type="text" class="form-control" id="inputLongitude" placeholder="Enter Longitude" name="longitude">
                                     </div>
-                                <!-- </div> -->
-                            <!-- </div> -->
-                        </div>
-                            <br />
-                            <div class="col-md-40" >
-                                <div class="row-md-30 form-inline" style="margin-left:1em">
-                                <p style="margin-left:0em; margin-right: 3.8em;margin-top:0em"> Locations Affected </p>
-                                <div class="" id="field">
-                                    <div id="field0">
+                                </div>
+                                <br />
+                                <div class="col-md-40" >
+                                    <div class="row-md-30 form-inline" style="margin-left:1em">
+                                        <p style="margin-left:0em; margin-right: 8.5em;margin-top:0em"> Location </p>
                                         <div class="form-group">
                                             <div class="row-md-5">
-                                                <select id="location0" name="location" type="text" class="form-control input-md">
+                                                <select id="location" name="location" type="text" class="form-control input-md">
                                                     {% for loc in location_names %}
                                                         <option value="{{ loc }}">{{ loc }}</option>
                                                     {% endfor %}
                                                 </select>
                                             </div>
                                         </div>
+                                        
                                     </div>
                                 </div>
-                                </div>
-                                    <br><br>
-                                </div>
+                                <br>
                                 <button type="submit" class="btn btn-elegant" style="width:50%; margin-left: 7em; color: white">Submit</button>
                             </form>
-                        </div>
                         </div>
                     </div>
 
@@ -148,7 +142,7 @@
 			</main>
 		</div>
 	<script src="{% static 'main/js/app.js' %}"></script>
-
+</div>
 {% endblock %}
 
 
