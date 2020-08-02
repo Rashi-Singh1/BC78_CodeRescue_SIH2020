@@ -1,6 +1,5 @@
 package com.example.coderescue.Activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -9,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -20,7 +18,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-import android.telephony.TelephonyManager;
 
 import com.example.coderescue.Classes.NetworkConnectivity;
 import com.example.coderescue.Fragments.HomeFragment;
@@ -104,6 +101,7 @@ public class VictimHomeActivity extends AppCompatActivity {
             }
         }
     }
+
 
     private void getCurrentLocation(){
         prog.setVisibility(View.VISIBLE);
