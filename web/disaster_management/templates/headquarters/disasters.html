@@ -64,14 +64,14 @@ input[type=text]:focus {
 }
 
 .material-switch > input[type="checkbox"] {
-    display: none;   
+    display: none;
 }
 
 .material-switch > label {
     cursor: pointer;
     height: 0px;
-    position: relative; 
-    width: 40px;  
+    position: relative;
+    width: 40px;
 }
 
 .material-switch > label::before {
@@ -124,14 +124,14 @@ input[type=text]:focus {
                     <span class="align-middle">Dashboard</span>
                 <!-- </a> -->
 
-                <ul class="sidebar-nav">
-                    
+                <ul class="sidebar-nav" style="width:30em">
+
                     <li class="sidebar-item">
 						<a class="sidebar-link" href="{% url 'main:headquarters_dashboard' %}">
-                        <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Manage Active Disasters</span>
+                        <i class="align-middle" data-feather="codepen"></i> <span class="align-middle">Manage Active Disasters</span>
                         </a>
                     </li>
-                    
+
                     <li class="sidebar-item active">
                         <a class="sidebar-link" href="{% url 'main:all_disasters' %}">
                         <i class="align-middle" data-feather="list"></i> <span class="align-middle">All Disasters</span>
