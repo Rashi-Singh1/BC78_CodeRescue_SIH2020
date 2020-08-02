@@ -1,7 +1,6 @@
 package com.example.coderescue.Activities;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -18,7 +17,6 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
-import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -28,8 +26,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.coderescue.Classes.NetworkConnectivity;
-import com.example.coderescue.Classes.ReceiveMessageUtility;
-import com.example.coderescue.Classes.SendMessageUtility;
 import com.example.coderescue.Fragments.HomeFragment;
 import com.example.coderescue.VictimLocationAdapter;
 import com.example.coderescue.VictimLocationCardModel;
@@ -41,7 +37,6 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.mongodb.stitch.android.core.StitchAppClient;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteFindIterable;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoClient;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
@@ -56,7 +51,6 @@ import java.util.Locale;
 
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Filters.mod;
 
 public class RescueTeamDashboard extends AppCompatActivity {
 
@@ -72,7 +66,6 @@ public class RescueTeamDashboard extends AppCompatActivity {
     ArrayList<VictimLocationCardModel> models = new ArrayList<>();
     VictimLocationCardModel m;
     private ProgressBar prog;
-    ImageButton speak_msg;
     int flag;
 
     public String lat,longi;
@@ -86,14 +79,16 @@ public class RescueTeamDashboard extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rescue_team_dashboard);
-        speak_msg = findViewById(R.id.voiceBtn3);
-        button_ar_map = findViewById(R.id.button_ar_map);
         button_ar_camera = findViewById(R.id.button_ar_camera);
         flag=0;
 
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         disaster_id = intent.getExtras().getString("disaster_id");
+
+        HomeFragment.diss_idd = disaster_id;
+        System.out.println(HomeFragment.diss_idd);
+        System.out.println("a for apple");
         username = intent.getExtras().getString("username");
         prog=findViewById(R.id.progressBar2);
         TextView teamname = findViewById(R.id.textView7);
@@ -107,19 +102,6 @@ public class RescueTeamDashboard extends AppCompatActivity {
         c = this;
         mRecylcerView.setLayoutManager(new LinearLayoutManager(this));
         snd2=findViewById(R.id.snd_msg2);
-        speak_msg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                speak();
-            }
-        });
-        button_ar_map.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(RescueTeamDashboard.this, GoogleMapActivity.class);
-                startActivity(intent);
-            }
-        });
         button_ar_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -147,27 +129,6 @@ public class RescueTeamDashboard extends AppCompatActivity {
             } else {
                 getCurrentLocation();
             }
-        }
-    }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode){
-            case SendMessageUtility.REQUEST_CODE_SEND_MESSAGE_PERMISSION:
-                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    if(!NetworkConnectivity.isInternetAvailable(getApplicationContext())){
-                        SendMessageUtility.sendMessage(getApplicationContext(), RescueTeamDashboard.this, "testing send message");
-                    }
-                }
-                else{
-                    Toast.makeText(getApplicationContext(), "You don't have the required permissions for sending text messages", Toast.LENGTH_SHORT).show();
-                }
-            case ReceiveMessageUtility.REQUEST_CODE_RECEIVE_MESSAGE_PERMISSION:
-                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    //TODO: add code here
-                }
-                else{
-                    Toast.makeText(getApplicationContext(), "You don't have the required permissions for receiving text messages", Toast.LENGTH_SHORT).show();
-                }
         }
     }
 
@@ -256,6 +217,7 @@ public class RescueTeamDashboard extends AppCompatActivity {
                                 m.setLongitude(i.getString("longitude"));
                                 m.setDistance(results[0]);
                                 m.setTitle(results[0] + " m");
+                                m.setCountvic(i.getInteger("count"));
                                 m.setRescueUsername(username);
                                 m.setDescription("Latitude: " + latvic + "\n" + "Longitude: "+ longivic);
                                 m.setDisaster_id(disaster_id);
@@ -364,39 +326,7 @@ public class RescueTeamDashboard extends AppCompatActivity {
         });
     }
 
-    private void speak(){
 
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Hi speak something");
-
-        try {
-            startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT);
-        }
-        catch (Exception e){
-            Toast.makeText(RescueTeamDashboard.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode){
-            case REQUEST_CODE_SPEECH_INPUT:{
-                if (resultCode == -1 && null!=data){
-                    ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    String spoken = result.get(0);
-                    if(spoken.contains("near")){
-                        flag=1;
-                        snd2.performClick();
-                    }
-                }
-            }
-        }
-    }
 
     public void getDisastername(){
         mongoClient = HomeFragment.client.getServiceClient(RemoteMongoClient.factory, "mongodb-atlas");

@@ -12,8 +12,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.coderescue.Activities.MapsActivity;
-import com.example.coderescue.Activities.PathToVictimActivity;
 import com.example.coderescue.Fragments.HomeFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -59,10 +57,12 @@ public class VictimLocationAdapter extends RecyclerView.Adapter<VictimLocationHo
         String lat = models.get(i).getLatitude();
         String longi = models.get(i).getLongitude();
         String username = models.get(i).getRescueUsername();
+        int countvic = models.get(i).getCountvic();
         String dis_id = models.get(i).getDisaster_id();
         myHolder.mTitle.setText(models.get(i).getTitle());
         myHolder.mLat.setText(lat);
         myHolder.mLong.setText(longi);
+        myHolder.countvic.setText(Integer.toString(countvic));
         System.out.println("jai shree ram2");
 
         //WHEN ITEM IS CLICKED
@@ -96,7 +96,7 @@ public class VictimLocationAdapter extends RecyclerView.Adapter<VictimLocationHo
                                 System.out.println(longi);
                                 for(Document doc: temp){
                                     System.out.println(count + " " + doc.getString("latitude") + " " + doc.getString("longitude"));
-                                    if(count==1 || !doc.getString("latitude").equals(lat) || !doc.getString("longitude").equals(longi))
+                                    if(count==1 || !doc.getString("latitude").equals(lat) || !doc.getString("longitude").equals(longi) || doc.getInteger("count")!=countvic)
                                     {
                                         temp2.add(doc);
                                     }
@@ -107,7 +107,7 @@ public class VictimLocationAdapter extends RecyclerView.Adapter<VictimLocationHo
                                         Document notactive = new Document()
                                                 .append("latitude", lat)
                                                 .append("longitude", longi)
-                                                .append("count",1)
+                                                .append("count",countvic)
                                                 .append("isactive", 0);
                                         temp2.add(notactive);
                                     }
@@ -149,6 +149,11 @@ public class VictimLocationAdapter extends RecyclerView.Adapter<VictimLocationHo
                     }
                 });
                 System.out.println("jai shree ram");
+//                String uri = String.format(Locale.ENGLISH, "geo:%f,%f", lat, longi);
+                String geoUri = "http://maps.google.com/maps?q=loc:" + lat + "," + longi + " (" + "label temp" + ")";
+
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(geoUri));
+                c.startActivity(intent);
                 //INTENT OBJ
 
 //                Intent iii=new Intent(c, MapsActivity.class);
