@@ -80,6 +80,27 @@
                         </LinearLayout>
 
                         <LinearLayout
+                            android:id="@+id/normal_third"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                                <ImageView
+                                    android:layout_width="45dp"
+                                    android:layout_height="45dp"
+                                    android:background="@android:color/transparent"
+                                    android:src="@drawable/ic_outline_emoji_people_24" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+
+                                    android:text="Provide Help" />
+                        </LinearLayout>
+
+                        <LinearLayout
                             android:id="@+id/normal_notif"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

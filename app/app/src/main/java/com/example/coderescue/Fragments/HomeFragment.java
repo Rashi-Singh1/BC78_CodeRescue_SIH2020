@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.coderescue.Activities.RescueTeamLoginActivity;
+import com.example.coderescue.Activities.UpdateInfoActivity;
 import com.example.coderescue.Activities.VictimHomeActivity;
 import com.example.coderescue.Activities.VictimNotifications;
 import com.example.coderescue.Adapters.SectionsPagerAdapter;
@@ -211,22 +212,27 @@ public class HomeFragment extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_home2);
         viewPager = findViewById(R.id.view_pager);
         diss_idd="aa";
         normal_victim = findViewById(R.id.normal_victim);
         normal_rescue = findViewById(R.id.normal_rescue);
+        normal_third = findViewById(R.id.normal_third);
         normal_notif = findViewById(R.id.normal_notif);
         tile_victim = findViewById(R.id.tile_victim);
         tile_rescue = findViewById(R.id.tile_rescue);
+        tile_third = findViewById(R.id.tile_third);
         tile_notif = findViewById(R.id.tile_notif);
 
         normal_victim.setOnClickListener(this::onClick);
         normal_rescue.setOnClickListener(this::onClick);
+        normal_third.setOnClickListener(this::onClick);
         normal_notif.setOnClickListener(this::onClick);
         tile_victim.setOnClickListener(this::onClick);
         tile_rescue.setOnClickListener(this::onClick);
+        tile_third.setOnClickListener(this::onClick);
         tile_notif.setOnClickListener(this::onClick);
 
         enableAnonymousAuth();
@@ -268,6 +274,10 @@ public class HomeFragment extends AppCompatActivity {
                 normal_rescue.setVisibility(View.INVISIBLE);
                 break;
             case 3:
+                tile_third.setVisibility(View.VISIBLE);
+                normal_third.setVisibility(View.INVISIBLE);
+                break;
+            case 4:
                 tile_notif.setVisibility(View.VISIBLE);
                 normal_notif.setVisibility(View.INVISIBLE);
                 break;
@@ -278,6 +288,7 @@ public class HomeFragment extends AppCompatActivity {
         List<Fragment> fragments = new ArrayList<Fragment>();
         fragments.add(new VictimHomeFragment());
         fragments.add(new RescueTeamLoginFragment());
+        fragments.add(new UpdateInfoFragment());
         fragments.add(new VictimNotificationFragment());
 //        fragments.add(new HomeFragment());
         return fragments;
@@ -294,6 +305,11 @@ public class HomeFragment extends AppCompatActivity {
             case R.id.tile_rescue:
                 Log.d("home page", "rescue click triggered");
                 viewPager.setCurrentItem(1, true);
+                break;
+            case R.id.normal_third:
+            case R.id.tile_third:
+                Log.d("home page", "third click triggered");
+                viewPager.setCurrentItem(2, true);
                 break;
             case R.id.normal_notif:
             case R.id.tile_notif:
@@ -312,10 +328,12 @@ public class HomeFragment extends AppCompatActivity {
         tile_rescue.setVisibility(View.INVISIBLE);
         normal_rescue.setVisibility(View.VISIBLE);
 
+        tile_third.setVisibility(View.INVISIBLE);
+        normal_third.setVisibility(View.VISIBLE);
+
         tile_notif.setVisibility(View.INVISIBLE);
         normal_notif.setVisibility(View.VISIBLE);
     }
-
 
     private void enableAnonymousAuth(){
         client = Stitch.getDefaultAppClient();
