@@ -101,8 +101,8 @@
                     </div>
                     <hr>
                     <div class="container" style="margin-left: 10em; display: inline-block;">
-                        <div class="card" style="width:34em; margin-left: 4em">
-                            <form action="{% url 'main:add_safe_house' %}" method="post" style="padding: 1.5em">
+                        <div class="card" style="width:34em; margin-left: 6em">
+                            <form action="{% url 'main:add_safe_house' %}" method="post" style="padding: 1.5em; margin-left:2em">
                                 {% csrf_token %}
                                 <div class="form-group row-md-12 mb-3">
                                     <div class="form-inline">
@@ -139,7 +139,7 @@
                                     </div>
                                 </div>
                                 <br>
-                                <button type="submit" class="btn btn-elegant" style="width:50%; margin-left: 7em; color: white">Submit</button>
+                                <button type="submit" class="btn btn-elegant" style="width:60%; margin-left: 5em; color: white">Submit</button>
                             </form>
                         </div>
                     </div>
