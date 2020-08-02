@@ -39,6 +39,7 @@ import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
 import com.example.coderescue.Activities.BeyondARWorld;
+import com.example.coderescue.Activities.CameraWithGoogleMapsActivity;
 import com.example.coderescue.Fragments.HomeFragment;
 import com.example.coderescue.R;
 import com.google.android.gms.common.ConnectionResult;
@@ -352,9 +353,9 @@ Log.d(TAG, placeid);
                                                     count=1;
                                                     Document notactive = new Document()
                                                             .append("latitude", victimLatitude)
-                                                            .append("longitude", victimLatitude)
+                                                            .append("longitude", victimLongitude)
                                                             .append("count",doc.getInteger("count"))
-                                                            .append("isactive", 0);
+                                                            .append("isactive", 1);
                                                     temp2.add(notactive);
                                                 }
                                             }
