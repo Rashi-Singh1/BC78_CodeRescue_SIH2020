@@ -66,32 +66,40 @@
 
                 <div class="row mb-2 mb-xl-3">
                     <div class="col-auto d-none d-sm-block">
-                        <h3><strong>Manage Active Disasters</strong></h3>
+                        <h3 style="font-family: sans-serif; color:darkslategrey; margin-left: 12em;"><strong>Manage Active Disasters</strong></h3>
                     </div>
                 </div>
                 <hr>
-                <div class="container">
-                    {% for disaster in active_disasters %}
-                        <h4><label for="{{ disaster.id }}"> {{ disaster.name }}</label></h4>
-                        <!-- <input type="checkbox" class = "disasterClass" id="{{ disaster.id }}" name="{{ disaster.id }}"
-                        value="{{ disaster.id }}" {% if disaster.isactive == 1 %} checked {% endif %}></h4> -->
-                        <b>Locations:</b>
-                        {% for loc in disaster.location %}
-                            {{loc}},
-                        {% endfor %}
-                        <a href="{% url 'main:update_statistics' disaster.id %}" class="btn btn-primary">Update Statistics</a>
-                        <br>
-                        <hr>
-                    {% endfor%}
-
+                <div class="card-deck mt-3" style="margin-left: 0rem;"></div>
+                        {% for disaster in active_disasters %}
+                        <div style="display:inline-block;">
+                        <div class="card bg-light mb-3 text-center" style="width: 22rem; margin-right: 0.7em;">
+                        <div class="card-body">
+                            <h4 style="color: grey; font-size: large;" class="card-title"><label for="{{ disaster.id }}"> {{ disaster.name }}</label></h4>
+                            <!-- <input type="checkbox" class = "disasterClass" id="{{ disaster.id }}" name="{{ disaster.id }}"
+                            value="{{ disaster.id }}" {% if disaster.isactive == 1 %} checked {% endif %}></h4> -->
+                            <b style="color: grey;" class="card-text">Locations:</b>
+                            {% for loc in disaster.location %}
+                                {{loc}} |
+                            {% endfor %}
+                            <br/>
+                            <br/>
+                            <!-- <div class="card-footer"> -->
+                                <a href="{% url 'main:update_statistics' disaster.id %}" class="btn btn-dark">Update Statistics</a>
+                            <!-- </div> -->
+                            <br>
+                            <hr>
+                        </div>
+                    </div>
                 </div>
+                        {% endfor%}
 
+                        <!-- <a href="{% url 'main:all_disasters' %}"> See all disasters and change their status </a> -->
+            </div>
             </div>
         </main>
     </div>
 </div>
-
-
 <script src="{% static 'main/js/app.js' %}"></script>
 
 {% endblock %}
