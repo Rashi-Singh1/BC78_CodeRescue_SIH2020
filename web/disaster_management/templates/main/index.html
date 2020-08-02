@@ -36,14 +36,14 @@
         margin:auto;
         margin-top:5%;
     }
-    
+
     #mapid{
         margin:auto;
         border: 2px solid #212529;
         border-radius: 10px;
         z-index:2;
     }
-    
+
     .dropdown-menu{
         width:300px;
         max-height: 400px;
@@ -56,7 +56,7 @@
     .jumbotron {
         margin-bottom: 0px;
     }
-  
+
 </style>
 {% endblock %}
 
@@ -65,26 +65,26 @@
     <br/>
 
 <div class="container">
-<div class="row">
+<div class="row" style="margin-left:0em">
 
   <div class="col-md-6">
     <form id='locform' method = "POST" action = "{% url 'main:getUserLocation' %}">
       {% csrf_token %}
           <!-- <label>Current State :</label><br> -->
         <div class="dropdown">
-          <h5 style="padding: 10px 50px 10px 50px; text-align: center;" class="jumbotron">
-            <label><b>Choose Location</b></label>
-            <button style="width:300px; padding: 10px 20px 10px 20px; margin: 0px 0px 0px 0px;" class="btn btn-primary dropdown-toggle" type="button" id="dropdownLocation" data-toggle="dropdown"
+          <h5 style="padding: 0.6em ; text-align: center; background-color:#444246;" class="jumbotron">
+            <label><b style="color:whitesmoke; margin-right:0.5em;">Choose Location</b></label>
+            <button style="width:200px; padding: 10px 20px 10px 20px; margin: 0px 0px 0px 0px;" class="btn btn-white dropdown-toggle" type="button" id="dropdownLocation" data-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false">
               {% if locationName %}
                 {{ locationName }}
               {% else %}
                 Choose Location
               {% endif %}
-            </button> 
-            
+            </button>
+
             <input id="location" name="location" value="" type="hidden">
-            <div id="location_wise_names" class="dropdown-menu" aria-labelledby="dropdownLocation">
+            <div id="location_wise_names" class="dropdown-menu" aria-labelledby="dropdownLocation" >
               {% for loc in location_names %}
                 <button class="dropdown-item" type="button" onclick="dropdownLocationClicked('{{loc}}')">{{ loc }}</button>
               {% endfor %}
@@ -94,16 +94,15 @@
   </form>
   </div>
 
-  <div class="col-md-6">
+  <div class="col-md-5">
     <div class="dropdown">
-      <h5 style="padding: 10px 50px 10px 50px;
-      text-align: center;"
-      class="jumbotron"><label><b>Choose Disaster</b></label>
-      <button style="width:300px; padding: 10px 20px 10px 20px; margin: 0px 0px 0px 0px;" class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuMenu" data-toggle="dropdown"
+    <h5 style="padding: 0.6em ; text-align: center; background-color:#444246;" class="jumbotron">
+        <label><b style="color:whitesmoke; margin-right:0.5em;">Choose Disaster</b></label>
+      <button style="width:200px; padding: 10px 20px 10px 20px; margin: 0px 0px 0px 0px;" class="btn btn-white dropdown-toggle" type="button" id="dropdownMenuMenu" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false">
         All Disasters
       </button>
-      
+
       <div class="dropdown-menu" aria-labelledby="dropdownMenuMenu">
         <button class="dropdown-item" value="All Disasters" id="disaster_name_button" onclick="dropdownButtonClicked('all_disasters','all_disasters')" type="button">All disasters</button>
 
@@ -119,7 +118,7 @@
 </div>
 </div>
 
-<div style="height:750px;width:90%;" id="mapid"></div>
+<div style="height:750px;width:75%;" id="mapid"></div>
 <div style="width:700px;" class="class"id="peopleAffected"></div>
 <div style="width:700px;" class="class"id="peopleKilled"></div>
 
@@ -139,7 +138,7 @@
           navigator.geolocation.getCurrentPosition(showPosition);
         } else {
           alert("Geolocation is not supported by this browser. Try selecting manually.")
-        }   
+        }
     }
 
     function showPosition(position) {
@@ -199,7 +198,7 @@
 
     var colors = ["#FA8072" , "#CD5C5C" , "#BA4545" , "#ED2939" , "#CA3433",
                       "#B22222", "#960018" , "#7CDAD2" , "#5E1914" , "#420D09"];
-        
+
     for (let [disaster_key, disaster_values] of Object.entries(disaster_data)) {
         center = [  disaster_values.coordinates.latitude  ,  disaster_values.coordinates.longitude  ]
         eval( 'var circle_' + disaster_values.id + '= ' +
@@ -214,10 +213,10 @@
 
     function dropdownButtonClicked(value,value2){
         document.getElementById('dropdownMenuMenu').innerText= value2;
-        
+
         // Draw charts
         drawChartPeopleAffected(value);
-        drawChartPeopleKilled(value);   
+        drawChartPeopleKilled(value);
 
         center =[21.853283,81.079102];
         var disaster_name = value;
@@ -252,7 +251,7 @@
             }
         }
         return;
-    
+
     }
 
     function drawChartPeopleAffected(value) {
@@ -345,8 +344,8 @@
         chartPeopleKilled.draw(data_for_chart, google.charts.Line.convertOptions(options));
         return;
     }
-       
-    
+
+
     function dropdownLocationClicked(location){
         $('#location').val(location);
         $('#locform').submit();
