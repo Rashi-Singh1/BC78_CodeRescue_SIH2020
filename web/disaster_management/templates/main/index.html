@@ -74,36 +74,9 @@
 {% block content %}
 <br>
 <div class="container">
-    <div class="row" style="margin-left:0em">
+    <div class="row">
 
     <div class="col-md-6">
-        <form id='locform' method = "POST" action = "{% url 'main:getUserLocation' %}">
-        {% csrf_token %}
-            <!-- <label>Current State :</label><br> -->
-            <div class="dropdown">
-            <h5 style="padding: 0.6em ; text-align: center; background-color:#444246;" class="jumbotron">
-                <label><b style="color:whitesmoke; margin-right:0.5em;">Choose Location</b></label>
-                <button style="width:200px; padding: 10px 20px 10px 20px; margin: 0px 0px 0px 0px;" class="btn btn-white dropdown-toggle" type="button" id="dropdownLocation" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-                {% if locationName %}
-                    {{ locationName }}
-                {% else %}
-                    Choose Location
-                {% endif %}
-                </button>
-
-                <input id="location" name="location" value="" type="hidden">
-                <div id="location_wise_names" class="dropdown-menu" aria-labelledby="dropdownLocation" >
-                {% for loc in location_names %}
-                    <button class="dropdown-item" type="button" onclick="dropdownLocationClicked('{{loc}}')">{{ loc }}</button>
-                {% endfor %}
-                </div>
-            </h5>
-            </div>
-    </form>
-    </div>
-
-    <div class="col-md-5">
         <div class="dropdown">
         <h5 style="padding: 0.6em ; text-align: center; background-color:#444246;" class="jumbotron">
             <label><b style="color:whitesmoke; margin-right:0.5em;">Choose Disaster</b></label>
@@ -123,42 +96,71 @@
         </div>
         <br>
     </div>
+    <div class="col-md-6" >
+        <form id='locform' method = "POST" action = "{% url 'main:getUserLocation' %}" style="margin-left: 17em;padding:0.1em">
+        {% csrf_token %}
+            <!-- <label>Current State :</label><br> -->
+            <div class="dropdown">
+            <h5 style="padding: 0.6em ; text-align: center; background-color:#444246; width:14em" class="jumbotron">
+                <label><b style="color:whitesmoke; margin-right:0.5em;">Choose Location for displaying notifications</b></label>
+                <button style="width:200px; padding: 10px 20px 10px 20px; margin: 0px 0px 0px 0px;" class="btn btn-white dropdown-toggle" type="button" id="dropdownLocation" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                {% if locationName %}
+                    {{ locationName }}
+                {% else %}
+                    Choose Location
+                {% endif %}
+                </button>
 
+                <input id="location" name="location" value="" type="hidden">
+                <div id="location_wise_names" class="dropdown-menu" aria-labelledby="dropdownLocation" >
+                {% for loc in location_names %}
+                    <button class="dropdown-item" type="button" onclick="dropdownLocationClicked('{{loc}}')">{{ loc }}</button>
+                {% endfor %}
+                </div>
+            </h5>
+            </div>
+    </form>
+    </div>
     </div>
 </div>
-
+<br/>
 <div>
     <div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-7" style="height:750px;" id="mapid"></div>
-        <div class="col-md-3" style="overflow-y: auto; height:750px; padding-left: 4%;" id = "notf_list">
-            
+        <div class="col-md-3" style="overflow-y: auto; height:750px; padding-left: 4%;padding-bottom: 1%;" id = "notf_list">
+            <div class="card text-white bg-info mb-3" style="width: 100%; height:9%">
+                <div style="padding:0.1em; text-align: center;">
+                    <h2>NOTIFICATIONS</h2>
+                </div>
+            </div>
             {% if not notifications %}
                 <h4>No notifications</h4>
             {% else %}
                 {% for x in notifications %}
                     {% if forloop.counter|divisibleby:2  == 0 %}
-                        <div class="card text-white bg-dark mb-3" style="width: 100%;">
-                    {% else %}    
-                        <div class="card bg-light mb-3" style="width: 100%;">
+                        <div class="card text-white bg-dark mb-3" style="width: 100%; height:12%">
+                    {% else %}
+                        <div class="card bg-light mb-3" style="width: 100%; height:12%">
                     {% endif %}
-                            <div class="card-header">
+                            <div class="card-header" style="padding:0.1em">
                                 {% if x.name %}
                                     Notification for <b>{{x.name}}</b>
                                 {% else %}
                                     Notification for <b>{{notfLocationName}}</b>
                                 {% endif %}
                             </div>
-                            <div class="card-body">
-                                <h5 class="card-title">{{x.message}}</h5>
-                                <p class="card-text">{{x.date}}</p>
+                            <div class="card-body" style="padding:0.1em">
+                                <h6 class="card-title" style="padding-left:0.1em;padding-right: 0.1em;margin-bottom: 0em;">{{x.message}}</h6>
+                                <p class="card-text" style="padding:0.1em; margin-top:0em">{{x.date}}</p>
                             </div>
                         </div>
                 {% endfor %}
                 <script>
                     lastNotification = "{{ notifications.0.date }}";
                 </script>
-            
+
             {% endif %}
 
         </div>
@@ -419,7 +421,7 @@
                         htmlToPrepend += '<div class="card bg-light mb-3" style="width: 100%;">';
                         flagForBackgroundColor=0;
                     }
-                    
+
                     else if( newDate > constantDate && flagForBackgroundColor == 0  ){
                         htmlToPrepend += '<div class="card text-white bg-dark mb-3" style="width: 100%;">';
                         flagForBackgroundColor=1;
