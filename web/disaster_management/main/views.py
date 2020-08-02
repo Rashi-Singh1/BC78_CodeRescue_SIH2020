@@ -344,3 +344,39 @@ def update_statistics(request, disaster_id):
             context['isHeadquartersLoggedIn']=1
 
         return render(request, 'headquarters/update_statistics.html', context)
+    
+    elif request.method == "POST":
+        affected_stats = request.POST.getlist('affected_stats')
+        deaths_stats = request.POST.getlist('deaths_stats')
+
+        total_stats = {
+            'affected' : 0,
+            'deaths' : 0
+        }
+
+        for stat in affected_stats:
+            total_stats['affected'] += int(stat)
+        for stat in deaths_stats:
+            total_stats['deaths'] += int(stat)
+
+        stats = {
+            "total" : total_stats
+        }
+
+        for x in range(len(affected_stats)):
+            day_no = "day_" + str(x)
+            day_stats = {
+                'affected' : int(affected_stats[x]),
+                'deaths' : int(deaths_stats[x])
+            }
+            stats[day_no] = day_stats
+
+        print(stats)
+        client = connect()
+        db = client.main.disaster
+        db.update_one(
+            { "id" : disaster_id },
+            { "$set": { "statistics" : stats } }
+        )
+
+        return HttpResponseRedirect(reverse('main:headquarters_dashboard'))
