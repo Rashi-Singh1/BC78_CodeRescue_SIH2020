@@ -1,6 +1,7 @@
 package com.example.coderescue.Activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -17,6 +18,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
+import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -37,6 +39,7 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.mongodb.stitch.android.core.StitchAppClient;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteFindIterable;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoClient;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
@@ -51,6 +54,7 @@ import java.util.Locale;
 
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.mod;
 
 public class RescueTeamDashboard extends AppCompatActivity {
 
@@ -66,6 +70,7 @@ public class RescueTeamDashboard extends AppCompatActivity {
     ArrayList<VictimLocationCardModel> models = new ArrayList<>();
     VictimLocationCardModel m;
     private ProgressBar prog;
+//    ImageButton speak_msg;
     int flag;
 
     public String lat,longi;
@@ -79,6 +84,8 @@ public class RescueTeamDashboard extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rescue_team_dashboard);
+//        speak_msg = findViewById(R.id.voiceBtn3);
+//        button_ar_map = findViewById(R.id.button_ar_map);
         button_ar_camera = findViewById(R.id.button_ar_camera);
         flag=0;
 
@@ -131,7 +138,6 @@ public class RescueTeamDashboard extends AppCompatActivity {
             }
         }
     }
-
     private void getCurrentLocation(){
         prog.setVisibility(View.VISIBLE);
         LocationRequest locationRequest = new LocationRequest();
@@ -326,7 +332,39 @@ public class RescueTeamDashboard extends AppCompatActivity {
         });
     }
 
+    private void speak(){
 
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Hi speak something");
+
+        try {
+            startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT);
+        }
+        catch (Exception e){
+            Toast.makeText(RescueTeamDashboard.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case REQUEST_CODE_SPEECH_INPUT:{
+                if (resultCode == -1 && null!=data){
+                    ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    String spoken = result.get(0);
+                    if(spoken.contains("near")){
+                        flag=1;
+                        snd2.performClick();
+                    }
+                }
+            }
+        }
+    }
 
     public void getDisastername(){
         mongoClient = HomeFragment.client.getServiceClient(RemoteMongoClient.factory, "mongodb-atlas");

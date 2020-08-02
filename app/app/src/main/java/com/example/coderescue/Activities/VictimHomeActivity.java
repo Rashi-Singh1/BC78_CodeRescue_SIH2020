@@ -1,5 +1,6 @@
 package com.example.coderescue.Activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -18,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import android.telephony.TelephonyManager;
 
 import com.example.coderescue.Classes.NetworkConnectivity;
 import com.example.coderescue.Fragments.HomeFragment;
@@ -69,17 +72,6 @@ public class VictimHomeActivity extends AppCompatActivity {
         c = this;
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         snd = findViewById(R.id.snd_msg);
-//        telephonyManager = (TelephonyManager) getSystemService(Context.x
-//                TELEPHONY_SERVICE);
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(VictimHomeActivity.this,
-//                    new String[]{Manifest.permission.READ_PHONE_STATE}, 2);
-//        }
-//        else{
-//            deviceid = telephonyManager.getDeviceId();
-//            System.out.println("deviceid");
-//            System.out.println(deviceid);
-//        }
 
     }
 
@@ -89,6 +81,8 @@ public class VictimHomeActivity extends AppCompatActivity {
         Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show();
 
         if(!NetworkConnectivity.isInternetAvailable(getApplicationContext())){
+//            Intent intent = new Intent(VictimHomeActivity.this, SendMessageActivity.class);
+//            startActivity(intent);
         }
         else{
             if (ContextCompat.checkSelfPermission(
@@ -100,6 +94,7 @@ public class VictimHomeActivity extends AppCompatActivity {
                 getCurrentLocation();
             }
         }
+//        ReceiveMessageUtility.checkPermissions(getApplicationContext(), VictimHomeActivity.this);
     }
 
 

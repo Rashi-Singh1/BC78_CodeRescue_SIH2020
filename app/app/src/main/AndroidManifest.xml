@@ -95,6 +95,12 @@
             android:name=".Activities.RescueTeamLoginActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
+        <receiver android:name=".Classes.ReceiveMessageUtility">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+
         <activity android:name=".Activities.GoogleMapActivity" />
         <activity android:name=".Activities.CameraWithGoogleMapsActivity" />
         <activity android:name=".Activities.UISamples.MainActivity">

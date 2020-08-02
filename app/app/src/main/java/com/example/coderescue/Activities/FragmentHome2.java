@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 
 import com.example.coderescue.Adapters.SectionsPagerAdapter;
 import com.example.coderescue.Fragments.RescueTeamLoginFragment;
+import com.example.coderescue.Fragments.UpdateInfoFragment;
 import com.example.coderescue.Fragments.VictimHomeFragment;
 import com.example.coderescue.Fragments.VictimNotificationFragment;
 import com.example.coderescue.R;
@@ -42,16 +43,20 @@ public class FragmentHome2 extends AppCompatActivity {
 
         normal_victim = findViewById(R.id.normal_victim);
         normal_rescue = findViewById(R.id.normal_rescue);
+        normal_third = findViewById(R.id.normal_third);
         normal_notif = findViewById(R.id.normal_notif);
         tile_victim = findViewById(R.id.tile_victim);
         tile_rescue = findViewById(R.id.tile_rescue);
+        tile_third = findViewById(R.id.tile_third);
         tile_notif = findViewById(R.id.tile_notif);
 
         normal_victim.setOnClickListener(this::onClick);
         normal_rescue.setOnClickListener(this::onClick);
+        normal_third.setOnClickListener(this::onClick);
         normal_notif.setOnClickListener(this::onClick);
         tile_victim.setOnClickListener(this::onClick);
         tile_rescue.setOnClickListener(this::onClick);
+        tile_third.setOnClickListener(this::onClick);
         tile_notif.setOnClickListener(this::onClick);
 
         List<Fragment> fragments = getFragments();
@@ -92,6 +97,10 @@ public class FragmentHome2 extends AppCompatActivity {
                 normal_rescue.setVisibility(View.INVISIBLE);
                 break;
             case 3:
+                tile_third.setVisibility(View.VISIBLE);
+                normal_third.setVisibility(View.INVISIBLE);
+                break;
+            case 4:
                 tile_notif.setVisibility(View.VISIBLE);
                 normal_notif.setVisibility(View.INVISIBLE);
                 break;
@@ -102,6 +111,7 @@ public class FragmentHome2 extends AppCompatActivity {
         List<Fragment> fragments = new ArrayList<Fragment>();
         fragments.add(new VictimHomeFragment());
         fragments.add(new RescueTeamLoginFragment());
+        fragments.add(new UpdateInfoFragment());
         fragments.add(new VictimNotificationFragment());
 //        fragments.add(new HomeFragment());
         return fragments;
@@ -119,6 +129,11 @@ public class FragmentHome2 extends AppCompatActivity {
                 Log.d("home page", "rescue click triggered");
                 viewPager.setCurrentItem(1, true);
                 break;
+            case R.id.normal_third:
+            case R.id.tile_third:
+                Log.d("home page", "third click triggered");
+                viewPager.setCurrentItem(2, true);
+                break;
             case R.id.normal_notif:
             case R.id.tile_notif:
                 Log.d("home page", "notif click triggered");
@@ -135,6 +150,9 @@ public class FragmentHome2 extends AppCompatActivity {
 
         tile_rescue.setVisibility(View.INVISIBLE);
         normal_rescue.setVisibility(View.VISIBLE);
+
+        tile_third.setVisibility(View.INVISIBLE);
+        normal_third.setVisibility(View.VISIBLE);
 
         tile_notif.setVisibility(View.INVISIBLE);
         normal_notif.setVisibility(View.VISIBLE);

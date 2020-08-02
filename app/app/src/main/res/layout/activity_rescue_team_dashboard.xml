@@ -10,16 +10,15 @@
     tools:context=".Activities.RescueTeamDashboard">
 
 
-
     <soup.neumorphism.NeumorphButton
         android:id="@+id/button_ar_camera"
         style="@style/Widget.Neumorph.Button"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
         app:neumorph_backgroundColor="#ff6663"
         android:layout_gravity="center"
+        android:layout_marginTop="20dp"
         android:text="AR Camera" />
 
     <soup.neumorphism.NeumorphButton
@@ -45,7 +44,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recylcerView2"
         android:layout_width="match_parent"
-        android:layout_height="347dp"
+        android:layout_height="350dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp" />
 
