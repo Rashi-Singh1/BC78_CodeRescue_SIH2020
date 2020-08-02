@@ -493,3 +493,42 @@ def add_safe_house(request):
             )
 
         return HttpResponseRedirect(reverse('main:all_disasters'))
+
+def add_rescue_team(request):
+    if request.method == "GET":
+        client = connect()
+        db = client.main.disaster
+        info = db.find({})
+        data = list(info)
+
+        all_disasters = []
+        for data1 in data:
+            all_disasters.append({
+                "name" : data1["name"],
+                "id" : data1["id"]
+            })
+
+        context = {
+            "all_disasters" : all_disasters
+        }
+
+        if request.session.get('isHeadquartersLoggedIn' , None) == 1 :
+            context['isHeadquartersLoggedIn']=1
+
+        return render(request, 'headquarters/add_rescue_team.html', context)
+
+    elif request.method == "POST":
+        client = connect()
+        db = client.authorization.rescue_team
+
+        if request.POST['rescuePassword'] == request.POST['rescueConfirmPassword']:
+            data = {
+                "username" : request.POST['rescueUsername'],
+                "password" : request.POST['rescuePassword'],
+                "disaster_id" : request.POST['selectedDisaster']
+            }
+            # print(data)
+            db.insert_one(data)
+            return HttpResponseRedirect(reverse('main:headquarters_dashboard'))
+        else:
+            return HttpResponseRedirect(reverse('main:add_rescue_team'))
