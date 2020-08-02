@@ -85,7 +85,7 @@ public class RescueTeamDashboard extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rescue_team_dashboard);
 //        speak_msg = findViewById(R.id.voiceBtn3);
-//        button_ar_map = findViewById(R.id.button_ar_map);
+        button_ar_map = findViewById(R.id.button_ar_map);
         button_ar_camera = findViewById(R.id.button_ar_camera);
         flag=0;
 
@@ -109,6 +109,13 @@ public class RescueTeamDashboard extends AppCompatActivity {
         c = this;
         mRecylcerView.setLayoutManager(new LinearLayoutManager(this));
         snd2=findViewById(R.id.snd_msg2);
+        button_ar_map.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RescueTeamDashboard.this, GoogleMapActivity.class);
+                startActivity(intent);
+            }
+        });
         button_ar_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,7 +132,6 @@ public class RescueTeamDashboard extends AppCompatActivity {
         Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show();
 
         if(!NetworkConnectivity.isInternetAvailable(getApplicationContext())){
-//            SendMessageUtility.sendMessage(getApplicationContext(), RescueTeamDashboard.this, "testing send message");
         }
         else{
             if (ContextCompat.checkSelfPermission(
@@ -138,6 +144,7 @@ public class RescueTeamDashboard extends AppCompatActivity {
             }
         }
     }
+
     private void getCurrentLocation(){
         prog.setVisibility(View.VISIBLE);
         LocationRequest locationRequest = new LocationRequest();

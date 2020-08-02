@@ -72,6 +72,17 @@ public class VictimHomeActivity extends AppCompatActivity {
         c = this;
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         snd = findViewById(R.id.snd_msg);
+//        telephonyManager = (TelephonyManager) getSystemService(Context.x
+//                TELEPHONY_SERVICE);
+//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(VictimHomeActivity.this,
+//                    new String[]{Manifest.permission.READ_PHONE_STATE}, 2);
+//        }
+//        else{
+//            deviceid = telephonyManager.getDeviceId();
+//            System.out.println("deviceid");
+//            System.out.println(deviceid);
+//        }
 
     }
 
@@ -81,8 +92,6 @@ public class VictimHomeActivity extends AppCompatActivity {
         Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show();
 
         if(!NetworkConnectivity.isInternetAvailable(getApplicationContext())){
-//            Intent intent = new Intent(VictimHomeActivity.this, SendMessageActivity.class);
-//            startActivity(intent);
         }
         else{
             if (ContextCompat.checkSelfPermission(
@@ -94,7 +103,6 @@ public class VictimHomeActivity extends AppCompatActivity {
                 getCurrentLocation();
             }
         }
-//        ReceiveMessageUtility.checkPermissions(getApplicationContext(), VictimHomeActivity.this);
     }
 
 
