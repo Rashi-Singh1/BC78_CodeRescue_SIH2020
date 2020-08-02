@@ -380,3 +380,46 @@ def update_statistics(request, disaster_id):
         )
 
         return HttpResponseRedirect(reverse('main:headquarters_dashboard'))
+
+def get_new_notifications(request, loc_no):
+    if request.is_ajax and request.method == "GET":
+        if 'lastNotification' not in request.session:
+            client = connect()
+            db = client.main.notification
+            data = db.find().sort("date", pymongo.DESCENDING)
+            allnotfs = list(data)
+            notfs = []
+            for notf in allnotfs:
+                if 'location' in notf and locations[loc_no] in notf['location']:
+                    notf['date'] = notf['date'].strftime('%d/%m/%Y %H:%M:%S')
+                    notfs.append(notf)
+            if notfs != []:
+                request.session['lastNotification'] = notfs[0]['date']
+
+        lastNotif = request.session['lastNotification']
+        locName = locations[loc_no]
+        client = connect()
+        db = client.main.notification
+        print("Queried new notifications")
+        data = db.find().sort("date", pymongo.DESCENDING)
+        allnotfs = list(data)
+        # print(allnotfs)
+        # print(lastNotif)
+        newnotfs = []
+        for notf in allnotfs:
+            if 'location' in notf and locName in notf['location']:
+                notf['date'] = notf['date'].strftime('%d/%m/%Y %H:%M:%S')
+                if notf['date'] != lastNotif:
+                    ########### since ObjectId is not json serializable
+                    notf['_id'] = 0
+                    newnotfs.append(notf)
+                else:
+                    break
+        if newnotfs != []:
+            request.session['lastNotification'] = newnotfs[0]['date']
+            newnotfs.reverse()
+        # so that last notification is picked first to add
+        # print(newnotfs)
+        return JsonResponse({"new_notifications": newnotfs}, status=200)
+    else:
+        HttpResponseRedirect(reverse('main:index'))
