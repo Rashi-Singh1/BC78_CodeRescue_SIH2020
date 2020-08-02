@@ -168,40 +168,41 @@
     <div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-7" style="height:750px;" id="mapid"></div>
-        <div class="col-md-3" style="overflow-y: auto; height:750px; padding-left: 4%;padding-bottom: 1%;" id = "notf_list">
-            <div class="card text-white bg-info mb-3" style="width: 100%; height:9%">
-                <div style="padding:0.1em; text-align: center;">
-                    <h2>NOTIFICATIONS</h2>
+        <div class="col-md-3" style="overflow-y: auto; height:750px; padding-left: 4%;padding-bottom: 1%;">
+            <div class="card text-white bg-info mb-3" style="width: 100%; height:8%">
+                <div style="padding:0.1em; text-align: center; vertical-align: middle;">
+                    <h2 style="line-height: inherit;">NOTIFICATIONS</h2>
                 </div>
             </div>
-            {% if not notifications %}
-                <h4>No notifications</h4>
-            {% else %}
-                {% for x in notifications %}
-                    {% if forloop.counter|divisibleby:2  == 0 %}
-                        <div class="card text-white bg-dark mb-3" style="width: 100%; height:12%">
-                    {% else %}
-                        <div class="card bg-light mb-3" style="width: 100%; height:12%">
-                    {% endif %}
-                            <div class="card-header" style="padding:0.1em;padding-left:0.4em;">
-                                {% if x.name %}
-                                    Notification for <b>{{x.name}}</b>
-                                {% else %}
-                                    Notification for <b>{{notfLocationName}}</b>
-                                {% endif %}
+            <div id = "notf_list">
+                {% if not notifications %}
+                    <h4>No notifications</h4>
+                {% else %}
+                    {% for x in notifications %}
+                        {% if forloop.counter|divisibleby:2  == 0 %}
+                            <div class="card text-white bg-dark mb-3" style="width: 100%; height:12%">
+                        {% else %}
+                            <div class="card bg-light mb-3" style="width: 100%; height:12%">
+                        {% endif %}
+                                <div class="card-header" style="padding:0.1em;padding-left:0.4em;">
+                                    {% if x.name %}
+                                        Notification for <b>{{x.name}}</b>
+                                    {% else %}
+                                        Notification for <b>{{notfLocationName}}</b>
+                                    {% endif %}
+                                </div>
+                                <div class="card-body" style="padding:0.1em">
+                                    <h6 class="card-title" style="padding-left:0.2em;padding-right: 0.1em;margin-bottom: 0em;">{{x.message}}</h6>
+                                    <p class="card-text" style="padding:0.2em; margin-top:0em">{{x.date}}</p>
+                                </div>
                             </div>
-                            <div class="card-body" style="padding:0.1em">
-                                <h6 class="card-title" style="padding-left:0.2em;padding-right: 0.1em;margin-bottom: 0em;">{{x.message}}</h6>
-                                <p class="card-text" style="padding:0.2em; margin-top:0em">{{x.date}}</p>
-                            </div>
-                        </div>
-                {% endfor %}
-                <script>
-                    lastNotification = "{{ notifications.0.date }}";
-                </script>
+                    {% endfor %}
+                    <script>
+                        lastNotification = "{{ notifications.0.date }}";
+                    </script>
 
-            {% endif %}
-
+                {% endif %}
+            </div>
         </div>
         <div class="col-md-1"></div>
     </div>
@@ -486,24 +487,24 @@
                     console.log(jsDate);
                     var htmlToPrepend = '';
                     if( newDate > constantDate && flagForBackgroundColor == 1  ){
-                        htmlToPrepend += '<div class="card bg-light mb-3" style="width: 100%;">';
+                        htmlToPrepend += '<div class="card bg-light mb-3" style="width: 100%; height:12%">';
                         flagForBackgroundColor=0;
                     }
 
                     else if( newDate > constantDate && flagForBackgroundColor == 0  ){
-                        htmlToPrepend += '<div class="card text-white bg-dark mb-3" style="width: 100%;">';
+                        htmlToPrepend += '<div class="card text-white bg-dark mb-3" style="width: 100%; height:12%">';
                         flagForBackgroundColor=1;
                     }
-                    htmlToPrepend += '<div class="card-header">Notification for <b>';
+                    htmlToPrepend += '<div class="card-header" style="padding:0.1em;padding-left:0.4em;">Notification for <b>';
                     if( newnotfs[notf].name ){
                         htmlToPrepend += newnotfs[notf].name;
                     }
                     else{
                         htmlToPrepend += '{{notfLocationName}}';
                     }
-                    htmlToPrepend += '</b><span style="float:right;width:70px;"> <img style="width:25px;height:25px;" src="https://freeiconshop.com/wp-content/uploads/edd/notification-flat.png"/> NEW</span></div><div class="card-body"><h5 class="card-title">';
+                    htmlToPrepend += '</b><span style="float:right;width:70px;"> <img style="width:25px;height:25px;" src="https://freeiconshop.com/wp-content/uploads/edd/notification-flat.png"/> NEW</span></div><div class="card-body" style="padding:0.1em"><h6 class="card-title" style="padding-left:0.2em;padding-right: 0.1em;margin-bottom: 0em;">';
                     htmlToPrepend+= newnotfs[notf].message+
-                        '</h5><p class="card-text">'+newnotfs[notf].date+'</p></div></div>';
+                        '</h6><p class="card-text" style="padding:0.2em; margin-top:0em">'+newnotfs[notf].date+'</p></div></div>';
                     if( newDate > constantDate ) {
                         $('#notf_list').prepend(htmlToPrepend);
                         lastNotification = newnotfs[notf]['date'];
