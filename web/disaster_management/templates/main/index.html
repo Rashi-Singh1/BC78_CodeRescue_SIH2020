@@ -94,7 +94,7 @@
           {% if nearest_safe_house.latitude != 'undefined' %}
           <div  style="width:100%; height:500px" id="nearestSafeHouseMap"></div>
           {% else %}
-          <h4 class="jumbotron"> Sorry, no safe houses found near your location</h4>
+          <h4 class="jumbotron"> {{ errorMessage }}</h4>
           {%endif%}
         </div>
         {% if nearest_safe_house.latitude != 'undefined' %}
@@ -225,10 +225,40 @@
 
 <script>
     var positionUser;
+    var cityUser ="";
     navigator.geolocation.getCurrentPosition((position)=>{
         positionUser = {
             'latitude': position.coords.latitude,
             'longitude': position.coords.longitude
+        };
+        let lat = position.coords.latitude;
+        let long = position.coords.longitude;
+        $.get('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat='+lat+'&lon='+long , function(data){
+            console.log(data.address);
+            var state = data.address.state;
+            console.log(state);
+            cityUser = state;
+            var url_mask = "{% url 'main:find_safe_house' '12345' '6789' 'undefined' %}".replace(/12345/, position.coords.latitude.toString()).replace(/6789/, position.coords.longitude.toString()).replace(/undefined/, cityUser);
+            document.getElementById("find_nearest_safe_house_link").setAttribute('href' , url_mask);
+        });
+
+        function loadMapNearestSafeHouse(){
+            var map = L.map('nearestSafeHouseMap');
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+            {% if nearest_safe_house  and nearest_safe_house.latitude != 'undefined' %}
+            console.log(positionUser.latitude + " ## " +positionUser.longitude);
+            console.log({{nearest_safe_house.latitude}} + " %% "+   {{nearest_safe_house.longitude}});
+            L.Routing.control({
+                waypoints: [
+                    L.latLng(positionUser.latitude,positionUser.longitude ),
+                    L.latLng({{nearest_safe_house.latitude}},  {{nearest_safe_house.longitude}})
+                ],
+                routeWhileDragging: true
+            }).addTo(map);
+            {% endif %}
         };
     });
 
@@ -251,6 +281,7 @@
             console.log(data.address);
             var state = data.address.state;
             console.log(state);
+            cityUser = state;
             $('#location').val(state).change();
             $('#locform').submit();
         });
@@ -544,11 +575,32 @@
 
         document.getElementById("pieChart").style.visibility = "visible";
         document.getElementById("pieChartLabel").style.visibility = "visible";
-        {% if nearest_safe_house %}
-            setTimeout(function () {
-                $( "#launchModalButton" ).click();},1000);
-        {% endif %}
     }
+
+    $(window).on('shown.bs.modal', function() {
+    $('#code').modal('show');
+    var map = L.map('nearestSafeHouseMap');
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+    {% if nearest_safe_house and nearest_safe_house.latitude != 'undefined'  %}
+    console.log(positionUser.latitude + " ## " +positionUser.longitude);
+    console.log({{nearest_safe_house.latitude}} + " %% "+   {{nearest_safe_house.longitude}});
+    L.Routing.control({
+        waypoints: [
+            L.latLng(positionUser.latitude,positionUser.longitude ),
+            L.latLng({{nearest_safe_house.latitude}},  {{nearest_safe_house.longitude}})
+        ],
+        routeWhileDragging: true
+    }).addTo(map);
+    {% endif %}
+    });
+    
+    {% if nearest_safe_house %}
+        setTimeout(function () {
+          $( "#launchModalButton" ).click();},1000);
+    {% endif %}
 
 </script>
 

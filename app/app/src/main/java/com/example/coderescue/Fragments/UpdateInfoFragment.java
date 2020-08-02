@@ -114,6 +114,7 @@ public class UpdateInfoFragment extends Fragment {
 //                Toast.makeText(parent.getContext(), "Selected: " + arrayList2.get(position),          Toast.LENGTH_LONG).show();
                 dis_id = arrayList2.get(position);
                 System.out.println(dis_id + "cur disaster");
+
             }
             @Override
             public void onNothingSelected(AdapterView <?> parent) {
@@ -242,7 +243,8 @@ public class UpdateInfoFragment extends Fragment {
                                     long numModified = task.getResult().getModifiedCount();
                                     Log.d("app", String.format("successfully matched %d and modified %d documents",
                                             numMatched, numModified));
-                                    Toast.makeText(getActivity(), "Submitted Successfully",          Toast.LENGTH_LONG).show();
+
+                                Toast.makeText(getActivity(), "Submitted Successfully",          Toast.LENGTH_LONG).show();
                                 } else {
                                     Log.e("app", "failed to update document with: ", task.getException());
                                 }
