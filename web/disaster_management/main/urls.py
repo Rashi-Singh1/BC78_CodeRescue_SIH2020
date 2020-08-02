@@ -15,5 +15,6 @@ urlpatterns = [
     path('headquarters/account/logout', views.headquartersLogout, name = 'logout'),
     path('headquarters/dashboard/send_notification', views.send_notification, name = 'send_notification'),
     path('headquarters/dashboard/disaster/<str:disaster_id>/update_statistics', views.update_statistics, name='update_statistics'),
-    path('get/ajax/notifications/new/<int:loc_no>', views.get_new_notifications, name = 'get_new_notifications')
+    path('get/ajax/notifications/new/<int:loc_no>', views.get_new_notifications, name = 'get_new_notifications'),
+    path('headquarters/dashboard/add_safe_house', views.add_safe_house, name = 'add_safe_house')
 ]
