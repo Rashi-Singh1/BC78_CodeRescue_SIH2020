@@ -26,15 +26,12 @@
 {% block css %}
 <style>
     #mapid{
-        margin:auto;
         border: 2px solid #212529;
         border-radius: 10px;
         z-index:2;
     }
     #notf_list{
-        width: 300px;
         z-index: 3;
-        position: absolute;
         right: 10px;
     }
     #peopleAffected{
@@ -67,69 +64,107 @@
         text-overflow: ellipsis;
         white-space: nowrap;
     }
+    .row {
+        margin:0;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-<div id = "notf_list">
-</div>
-    <br/>
-
+<br>
 <div class="container">
-<div class="row" style="margin-left:0em">
+    <div class="row" style="margin-left:0em">
 
-  <div class="col-md-6">
-    <form id='locform' method = "POST" action = "{% url 'main:getUserLocation' %}">
-      {% csrf_token %}
-          <!-- <label>Current State :</label><br> -->
-        <div class="dropdown">
-          <h5 style="padding: 0.6em ; text-align: center; background-color:#444246;" class="jumbotron">
-            <label><b style="color:whitesmoke; margin-right:0.5em;">Choose Location</b></label>
-            <button style="width:200px; padding: 10px 20px 10px 20px; margin: 0px 0px 0px 0px;" class="btn btn-white dropdown-toggle" type="button" id="dropdownLocation" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false">
-              {% if locationName %}
-                {{ locationName }}
-              {% else %}
-                Choose Location
-              {% endif %}
-            </button>
+    <div class="col-md-6">
+        <form id='locform' method = "POST" action = "{% url 'main:getUserLocation' %}">
+        {% csrf_token %}
+            <!-- <label>Current State :</label><br> -->
+            <div class="dropdown">
+            <h5 style="padding: 0.6em ; text-align: center; background-color:#444246;" class="jumbotron">
+                <label><b style="color:whitesmoke; margin-right:0.5em;">Choose Location</b></label>
+                <button style="width:200px; padding: 10px 20px 10px 20px; margin: 0px 0px 0px 0px;" class="btn btn-white dropdown-toggle" type="button" id="dropdownLocation" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                {% if locationName %}
+                    {{ locationName }}
+                {% else %}
+                    Choose Location
+                {% endif %}
+                </button>
 
-            <input id="location" name="location" value="" type="hidden">
-            <div id="location_wise_names" class="dropdown-menu" aria-labelledby="dropdownLocation" >
-              {% for loc in location_names %}
-                <button class="dropdown-item" type="button" onclick="dropdownLocationClicked('{{loc}}')">{{ loc }}</button>
-              {% endfor %}
+                <input id="location" name="location" value="" type="hidden">
+                <div id="location_wise_names" class="dropdown-menu" aria-labelledby="dropdownLocation" >
+                {% for loc in location_names %}
+                    <button class="dropdown-item" type="button" onclick="dropdownLocationClicked('{{loc}}')">{{ loc }}</button>
+                {% endfor %}
+                </div>
+            </h5>
             </div>
-          </h5>
-        </div>
-  </form>
-  </div>
-
-  <div class="col-md-5">
-    <div class="dropdown">
-    <h5 style="padding: 0.6em ; text-align: center; background-color:#444246;" class="jumbotron">
-        <label><b style="color:whitesmoke; margin-right:0.5em;">Choose Disaster</b></label>
-      <button style="width:200px; padding: 10px 20px 10px 20px; margin: 0px 0px 0px 0px;" class="btn btn-white dropdown-toggle" type="button" id="dropdownMenuMenu" data-toggle="dropdown"
-        aria-haspopup="true" aria-expanded="false">
-        All Disasters
-      </button>
-
-      <div class="dropdown-menu" aria-labelledby="dropdownMenuMenu">
-        <button class="dropdown-item" value="All Disasters" id="disaster_name_button" onclick="dropdownButtonClicked('all_disasters','all_disasters')" type="button">All disasters</button>
-
-        {% for data_key , data_values in data.items %}
-          <button class="dropdown-item" onclick="dropdownButtonClicked('{{data_values.id}}','{{data_key}}')" type="button">{{data_key}}</button>
-        {% endfor %}
-      </div>
-      </h5>
+    </form>
     </div>
-    <br>
-  </div>
 
-</div>
+    <div class="col-md-5">
+        <div class="dropdown">
+        <h5 style="padding: 0.6em ; text-align: center; background-color:#444246;" class="jumbotron">
+            <label><b style="color:whitesmoke; margin-right:0.5em;">Choose Disaster</b></label>
+        <button style="width:200px; padding: 10px 20px 10px 20px; margin: 0px 0px 0px 0px;" class="btn btn-white dropdown-toggle" type="button" id="dropdownMenuMenu" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            All Disasters
+        </button>
+
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuMenu">
+            <button class="dropdown-item" value="All Disasters" id="disaster_name_button" onclick="dropdownButtonClicked('all_disasters','all_disasters')" type="button">All disasters</button>
+
+            {% for data_key , data_values in data.items %}
+            <button class="dropdown-item" onclick="dropdownButtonClicked('{{data_values.id}}','{{data_key}}')" type="button">{{data_key}}</button>
+            {% endfor %}
+        </div>
+        </h5>
+        </div>
+        <br>
+    </div>
+
+    </div>
 </div>
 
-<div style="height:750px;width:75%;" id="mapid"></div>
+<div>
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-7" style="height:750px;" id="mapid"></div>
+        <div class="col-md-3" style="overflow-y: auto; height:750px; padding-left: 4%;" id = "notf_list">
+            
+            {% if not notifications %}
+                <h4>No notifications</h4>
+            {% else %}
+                {% for x in notifications %}
+                    {% if forloop.counter|divisibleby:2  == 0 %}
+                        <div class="card text-white bg-dark mb-3" style="width: 100%;">
+                    {% else %}    
+                        <div class="card bg-light mb-3" style="width: 100%;">
+                    {% endif %}
+                            <div class="card-header">
+                                {% if x.name %}
+                                    Notification for <b>{{x.name}}</b>
+                                {% else %}
+                                    Notification for <b>{{notfLocationName}}</b>
+                                {% endif %}
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">{{x.message}}</h5>
+                                <p class="card-text">{{x.date}}</p>
+                            </div>
+                        </div>
+                {% endfor %}
+                <script>
+                    lastNotification = "{{ notifications.0.date }}";
+                </script>
+            
+            {% endif %}
+
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+</div>
+
 <div style="width:700px;" class="class"id="peopleAffected"></div>
 <div style="width:700px;" class="class"id="peopleKilled"></div>
 
@@ -356,19 +391,21 @@
         return;
     }
 
+    var flagForBackgroundColor = 1;
+// Global variable to store time-date of last notification displayed
     setInterval(function () {
         console.log('Called new notifications at : ' + new Date());
-        {% if locationIndex %}
+        {% if notfLocIndex %}
         $.ajax({
             type: 'GET',
-            url: "{% url 'main:get_new_notifications' locationIndex %}",
+            url: "{% url 'main:get_new_notifications' notfLocIndex %}",
             success: function (response) {
                 var newnotfs = response["new_notifications"];
-                var constantDate = moment( '{{request.session.lastNotification}}' , 'DD-MM-YYYY HH:mm:ss').toDate();
-                console.log(constantDate);
+                console.log(newnotfs);
+                var constantDate = moment( lastNotification , 'DD-MM-YYYY HH:mm:ss').toDate();
                 for (notf in newnotfs) {
                     var newDate = moment( newnotfs[notf]['date'] , 'DD-MM-YYYY HH:mm:ss').toDate();
-                    console.log('{{request.session.lastNotification}}');
+                    console.log(lastNotification);
                     console.log(newnotfs[notf]['date']);
                     console.log(newDate);
                     console.log(constantDate);
@@ -376,31 +413,34 @@
                     var jsDate = momentDate.toDate();
                     console.log("hello");
                     console.log(jsDate);
-                    var htmlToPrepend = '<div class="toast" data-autohide="false"><div class="toast-header"><svg class=" rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"><rect fill="#007aff" width="100%" height="100%" /></svg>'+
-                              '<strong id="notificationHeadingToast" class="mr-auto">Notification for ';
-                        if( newnotfs[notf].name ){
-                        htmlToPrepend += newnotfs[notf].name;
-                        }
-                        else{
-                            htmlToPrepend += '{{locationName}}';
-                        }
-                        htmlToPrepend +='</strong>'+
-                              // '<small class="text-muted">Just Now</small>'+
-                              '<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="toast-body">'+
-                                newnotfs[notf]['message']+
-                              '</div></div>';
-                    if( newDate > constantDate ) {
-                        $('#notf_list').prepend(
-                            // '<li><h4>'+ JSON.stringify(newnotfs[notf]) +'</h4></li>'
-                            htmlToPrepend)
-                        // lastNotification = newnotfs[notf]['date'];
+                    var htmlToPrepend = '';
+                    if( newDate > constantDate && flagForBackgroundColor == 1  ){
+                        htmlToPrepend += '<div class="card bg-light mb-3" style="width: 100%;">';
+                        flagForBackgroundColor=0;
                     }
-                    $(".toast").toast('show');
+                    
+                    else if( newDate > constantDate && flagForBackgroundColor == 0  ){
+                        htmlToPrepend += '<div class="card text-white bg-dark mb-3" style="width: 100%;">';
+                        flagForBackgroundColor=1;
+                    }
+                    htmlToPrepend += '<div class="card-header">Notification for <b>';
+                    if( newnotfs[notf].name ){
+                        htmlToPrepend += newnotfs[notf].name;
+                    }
+                    else{
+                        htmlToPrepend += '{{notfLocationName}}';
+                    }
+                    htmlToPrepend += '</b><span style="float:right;width:70px;"> <img style="width:25px;height:25px;" src="https://freeiconshop.com/wp-content/uploads/edd/notification-flat.png"/> NEW</span></div><div class="card-body"><h5 class="card-title">';
+                    htmlToPrepend+= newnotfs[notf].message+
+                        '</h5><p class="card-text">'+newnotfs[notf].date+'</p></div></div>';
+                    if( newDate > constantDate ) {
+                        $('#notf_list').prepend(htmlToPrepend);
+                        lastNotification = newnotfs[notf]['date'];
+                    }
                 }
             },
             error: function (response) {
-                console.log("dsadsadsaasdsadsadsadasads!@!@!@!@!@!!@!@!");
-                //console.log(response)
+                console.log("Error");
             }
         })
         {% endif %}

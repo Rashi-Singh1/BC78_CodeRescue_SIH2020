@@ -50,8 +50,32 @@ def index(request , latitude='' , longitude=''):
 
     context['data'] = data
 
-    if request.session.get('isHeadquartersLoggedIn' , None) == 1 :
-        context['isHeadquartersLoggedIn']=1
+    if request.session.has_key('locationIndex'):
+        loc_no = int(request.session['locationIndex'])
+        db = client.main.notification
+        print("connected")
+        data = db.find().sort("date", pymongo.DESCENDING)
+        allnotfs = list(data)
+        if 0 <= loc_no < len(locations):
+            notfLocation = locations[loc_no]
+        else:
+            HttpResponseRedirect(reverse('main:index'))
+
+        notfs = []
+        for notf in allnotfs:
+            if 'location' in notf and notfLocation in notf['location']:
+                notf['date'] = notf['date'].strftime('%d/%m/%Y %H:%M:%S')
+                notfs.append(notf)
+
+        if notfs != []:
+            request.session['lastNotification'] = notfs[0]['date']
+        
+        context ['notifications'] = notfs
+        context ['notfLocIndex'] = loc_no
+        context ['notfLocationName'] = locations[loc_no]
+
+        if request.session.get('isHeadquartersLoggedIn' , None) == 1 :
+            context['isHeadquartersLoggedIn']=1
 
     return render(request , 'main/index.html' , context)
 
