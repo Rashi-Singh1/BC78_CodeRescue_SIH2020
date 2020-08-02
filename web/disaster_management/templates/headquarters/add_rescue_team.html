@@ -92,7 +92,58 @@
         </nav>
         <div class="main">
 			<main class="content">
-				
+                <div class="container-fluid p-0">
+
+					<div class="row mb-2 mb-xl-3">
+						<div class="col-auto d-none d-sm-block">
+							<h3 style="margin-left: 15em"><strong>Add Rescue Team</strong></h3>
+						</div>
+                    </div>
+                    <hr>
+                    <div class="container" style="margin-left: 10em; display: inline-block;">
+                        <div class="card" style="width:34em; margin-left: 6em">
+                            <form action="{% url 'main:add_rescue_team' %}" method="post" style="padding: 1.5em; margin-left:4em">
+                                {% csrf_token %}
+                                <div class="form-group row-md-12 mb-3">
+                                    <div class="form-inline">
+                                        <label for="rescueUsername" style="margin-right:4.5em;margin-left: 1em;">Username</label>
+                                        <input type="text" class="form-control" id="rescueUsername" placeholder="Enter Username" name="rescueUsername" style="width:12.5em;">
+                                    </div>
+                                </div>
+                                <div class="form-group row-md-12 mb-3">
+                                    <div class="form-inline">
+                                        <label for="rescuePassword" style="margin-right:4.7em;margin-left: 1em;">Password</label>
+                                        <input type="password" class="form-control" id="rescuePassword" placeholder="Enter Password" name="rescuePassword" style="width:12.5em;">
+                                    </div>
+                                </div>
+                                <div class="form-group row-md-12 mb-3">
+                                    <div class="form-inline">
+                                        <label for="rescueConfirmPassword" style="margin-right:0.9em;margin-left: 1em;">Confirm Password</label>
+                                        <input type="password" class="form-control" id="rescueConfirmPassword" placeholder="Enter Password" name="rescueConfirmPassword" style="width:12.5em;">
+                                    </div>
+                                </div>
+                                <div class="col-md-40" >
+                                    <div class="row-md-30 form-inline" style="margin-left:1em" id="disaster_wise_names">
+                                        <label for="all_disasters" style="margin-left:0em; margin-right: 1em;margin-top:0em"> Disaster Name</p>
+                                        <div class="form-group">
+                                            <div class="row-md-5">
+                                                <select id="selectedDisaster" name="selectedDisaster" type="text" class="form-control input-md" style="width:12.5em; margin-left: 2.5em;">
+                                                    {% for disaster in all_disasters %}
+                                                        <option value = "{{disaster.id}}"> {{disaster.name}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <br>
+                                <button type="submit" class="btn btn-elegant" style="width:60%; margin-left: 4em; color: white">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+
+				</div>
 			</main>
 		</div>
 	<script src="{% static 'main/js/app.js' %}"></script>
