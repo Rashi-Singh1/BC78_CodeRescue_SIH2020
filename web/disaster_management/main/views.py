@@ -222,6 +222,7 @@ def add_disaster(request):
                     'deaths' : 0
                 }
             },
+            'category' : request.POST['disasterCategory'],
             'location' : location,
             'starting_date' : str(datetime.now().date())
         }
