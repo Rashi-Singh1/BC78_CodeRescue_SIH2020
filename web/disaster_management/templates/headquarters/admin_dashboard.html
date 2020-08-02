@@ -34,6 +34,12 @@
             <!-- </a> -->
 
             <ul class="sidebar-nav">
+                
+                <li class="sidebar-item active">
+                    <a class="sidebar-link" href="{% url 'main:headquarters_dashboard' %}">
+                    <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Manage Active Disasters</span>
+                    </a>
+                </li>
 
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="{% url 'main:all_disasters' %}">
@@ -58,7 +64,29 @@
     </nav>
     <div class="main">
         <main class="content">
-            <h1 style="background-color:lightgrey; color:black; text-align: center; width:50%; margin-left:5em; margin-top: 4em; padding:1em">Logged in Successfully</h1>
+            <div class="container-fluid p-0">
+
+                <div class="row mb-2 mb-xl-3">
+                    <div class="col-auto d-none d-sm-block">
+                        <h3><strong>Manage Active Disasters</strong></h3>
+                    </div>
+                </div>
+                <hr>
+                <div class="container">
+                    {% for disaster in active_disasters %}
+                        <h4><label for="{{ disaster.id }}"> {{ disaster.name }}</label></h4>
+                        <!-- <input type="checkbox" class = "disasterClass" id="{{ disaster.id }}" name="{{ disaster.id }}"
+                        value="{{ disaster.id }}" {% if disaster.isactive == 1 %} checked {% endif %}></h4> -->
+                        <b>Locations:</b>
+                        {% for loc in disaster.location %}
+                            {{loc}},
+                        {% endfor %}
+                        <br>
+                        <hr>
+                    {% endfor%}
+                </div>
+
+            </div>
         </main>
     </div>
 </div>
