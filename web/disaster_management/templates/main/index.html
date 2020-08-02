@@ -86,7 +86,7 @@
         </button>
 
         <div class="dropdown-menu" aria-labelledby="dropdownMenuMenu">
-            <button class="dropdown-item" value="All Disasters" id="disaster_name_button" onclick="dropdownButtonClicked('all_disasters','all_disasters')" type="button">All disasters</button>
+            <button class="dropdown-item" value="All Disasters" id="disaster_name_button" onclick="dropdownButtonClicked('all_disasters','All disasters')" type="button">All disasters</button>
 
             {% for data_key , data_values in data.items %}
             <button class="dropdown-item" onclick="dropdownButtonClicked('{{data_values.id}}','{{data_key}}')" type="button">{{data_key}}</button>
@@ -168,9 +168,15 @@
     </div>
 </div>
 
-<div style="width:700px;" class="class"id="peopleAffected"></div>
-<div style="width:700px;" class="class"id="peopleKilled"></div>
-
+<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-5 class" id="peopleAffected"></div>
+    <div class="col-md-5 class" id="peopleKilled"></div>
+    <div class="col-md-1"></div>
+</div>
+<div class="container">
+    <canvas id="pieChart" style="max-width: 900px; margin: auto; visibility: hidden;"></canvas>
+</div>
 
 <script>
     var positionUser;
@@ -266,6 +272,7 @@
         // Draw charts
         drawChartPeopleAffected(value);
         drawChartPeopleKilled(value);
+        drawPieChart(value);
 
         center =[21.853283,81.079102];
         var disaster_name = value;
@@ -452,6 +459,43 @@
     function dropdownLocationClicked(location){
         $('#location').val(location);
         $('#locform').submit();
+    }
+
+    function drawPieChart(value) {
+
+        var affected = 0;
+        var deaths = 0;
+        var disaster_name = value;
+        if( disaster_name == "all_disasters" )  {
+            document.getElementById("pieChart").style.visibility = "hidden";
+            return;
+        }
+
+        for (let [ statistics_key,statistics_value ] of Object.entries(disaster_data[disaster_name]["statistics"] )) {
+            if( statistics_key != "total" )
+            {
+                affected += statistics_value.affected;
+                deaths += statistics_value.deaths;
+            }
+        }
+
+        var ctxP = document.getElementById("pieChart").getContext('2d');
+        var myPieChart = new Chart(ctxP, {
+            type: 'pie',
+            data: {
+                labels: ["Affected", "Deaths"],
+                datasets: [{
+                    data: [affected, deaths],
+                    backgroundColor: ["rgb(67, 69, 157)", "rgb(226, 67, 30)"],
+                    hoverBackgroundColor: ["rgb(87, 89, 177)", "rgb(246, 87, 50)"]
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+
+        document.getElementById("pieChart").style.visibility = "visible";
     }
 
 </script>
