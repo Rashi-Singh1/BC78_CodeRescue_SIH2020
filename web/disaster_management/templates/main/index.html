@@ -175,7 +175,9 @@
                 </div>
             </div>
             <div id = "notf_list">
-                {% if not notifications %}
+                {% if not locationName %}
+                    <h4>No location detected. <br/>Please select a location to view notifications.</h4>
+                {% elif not notifications %}
                     <h4>No notifications</h4>
                 {% else %}
                     {% for x in notifications %}
@@ -209,13 +211,16 @@
 </div>
 
 <div class="row">
-    <div class="col-md-1"></div>
-    <div class="col-md-5 class" id="peopleAffected"></div>
-    <div class="col-md-5 class" id="peopleKilled"></div>
-    <div class="col-md-1"></div>
+    <div class="col-md-2"></div>
+    <div class="col-md-4 class" id="peopleAffected"></div>
+    <div class="col-md-4 class" id="peopleKilled"></div>
+    <div class="col-md-2"></div>
 </div>
+<br/>
+<br/>
 <div class="container">
-    <canvas id="pieChart" style="max-width: 900px; margin: auto; visibility: hidden;"></canvas>
+    <canvas id="pieChart" style="max-width: 750px; margin: auto; visibility: hidden;"></canvas>
+    <h5 id="pieChartLabel" style="margin: auto;visibility: hidden;text-align: center; padding-top: 1em;">Count of people affected and deaths</h5>
 </div>
 
 <script>
@@ -381,8 +386,8 @@
             series:{
                 0: { color: '#43459d' },
             },
-            width: 800,
-            height: 500,
+            width: 600,
+            height: 400,
             axes: {
                 x: {
                 0: {side: 'bottom'}
@@ -427,8 +432,8 @@
             title: 'No of people who lost their lives by  ' + disaster_data[disaster_name]["name"],
             subtitle: 'Day Wise'
             },
-            width: 800,
-            height: 500,
+            width: 600,
+            height: 400,
             axes: {
             x: {
                 0: {side: 'bottom'}
@@ -508,6 +513,8 @@
         var disaster_name = value;
         if( disaster_name == "all_disasters" )  {
             document.getElementById("pieChart").style.visibility = "hidden";
+            document.getElementById("pieChartLabel").style.visibility = "hidden";
+
             return;
         }
 
@@ -526,8 +533,8 @@
                 labels: ["Affected", "Deaths"],
                 datasets: [{
                     data: [affected, deaths],
-                    backgroundColor: ["rgb(67, 69, 157)", "rgb(226, 67, 30)"],
-                    hoverBackgroundColor: ["rgb(87, 89, 177)", "rgb(246, 87, 50)"]
+                    backgroundColor: ["rgb(97, 99, 187)", "rgb(226, 67, 30)"],
+                    hoverBackgroundColor: ["rgb(117, 119, 207)", "rgb(246, 87, 50)"]
                 }]
             },
             options: {
@@ -536,6 +543,7 @@
         });
 
         document.getElementById("pieChart").style.visibility = "visible";
+        document.getElementById("pieChartLabel").style.visibility = "visible";
         {% if nearest_safe_house %}
             setTimeout(function () {
                 $( "#launchModalButton" ).click();},1000);
