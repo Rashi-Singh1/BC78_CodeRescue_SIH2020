@@ -77,6 +77,43 @@ def index(request , latitude='' , longitude=''):
         if request.session.get('isHeadquartersLoggedIn' , None) == 1 :
             context['isHeadquartersLoggedIn']=1
 
+        if latitude != '' and longitude != '' and request.session['locationName'] != '':
+            dataSafeHouses = list(client.main.safeHouses.find({ 'state': request.session['locationName'] }))
+            
+            if len(dataSafeHouses) == 0:
+                context['nearest_safe_house'] = {
+                    'latitude': "undefined" ,
+                    'longitude': "undefined"
+                }
+            else:
+                listSafeHousesInUserLocation = dataSafeHouses[0]['safehouse']
+                print(listSafeHousesInUserLocation)
+                context['listSafeHouses'] = listSafeHousesInUserLocation
+                URL_BING_API = "https://dev.virtualearth.net/REST/v1/Routes/DistanceMatrix?origins="
+                URL_BING_API += latitude + "," + longitude + "&destinations="
+                for obj in listSafeHousesInUserLocation:
+                    URL_BING_API += obj["latitude"] + "," + obj["longitude"] + ";"
+                URL_BING_API = URL_BING_API[:-1]
+
+                URL_BING_API += "&travelMode=driving&key=AvINDoc3SxM9iNoyy6FaioCFuKWu9qowxEk1U1EeY4oEut8puIbYP0W9gjZWeO7F"
+                # print(URL_BING_API)
+                r = requests.get(url = URL_BING_API)
+                r = r.json()
+                min = 100000
+                destinationIndex = -1
+                if len(r['resourceSets']) > 0:
+                    for safeHouseDistance in  r['resourceSets'][0]['resources'][0]['results']:
+                        print(safeHouseDistance['travelDistance'])
+                        if float(safeHouseDistance['travelDistance']) < min and float(safeHouseDistance['travelDistance']) >0:
+                            print(safeHouseDistance['travelDistance'])
+                            min = float(safeHouseDistance['travelDistance'])
+                            destinationIndex = safeHouseDistance['destinationIndex']
+                    context['nearest_safe_house'] = {
+                        'latitude': listSafeHousesInUserLocation[destinationIndex]['latitude'] ,
+                        'longitude': listSafeHousesInUserLocation[destinationIndex]['longitude']
+                    }
+                    print(context['nearest_safe_house'])
+
     return render(request , 'main/index.html' , context)
 
 def getUserLocation(request):
