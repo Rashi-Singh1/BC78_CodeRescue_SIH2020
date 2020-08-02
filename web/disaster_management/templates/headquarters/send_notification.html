@@ -104,13 +104,13 @@
                         <i class="align-middle" data-feather="home"></i> <span class="align-middle">Add Safe House</span>
                         </a>
                     </li>
-                    
+
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{% url 'main:add_rescue_team' %}">
                         <i class="align-middle" data-feather="users"></i> <span class="align-middle">Add Rescue Team</span>
                         </a>
                     </li>
-                    
+
                 </ul>
 
 			</div>
@@ -122,12 +122,12 @@
 
 					<div class="row mb-2 mb-xl-3">
 						<div class="col-auto d-none d-sm-block">
-							<h3 style="margin-left: 14em;"><strong>Send Notification</strong></h3>
+							<h3 style="margin-left: 15em;"><strong>Send Notification</strong></h3>
 						</div>
                     </div>
                     <hr>
                     <div class="container">
-                      <div class="card bg-light" style="width:24em; margin-left: 20em">
+                      <div class="card bg-light" style="width:24em; margin-left: 21em">
                         <form method="POST" action="{% url 'main:send_notification' %}" style="padding:1em">
                             {% csrf_token %}
                           <div style="display:flex;">
