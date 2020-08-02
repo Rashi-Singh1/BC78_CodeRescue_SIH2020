@@ -88,9 +88,9 @@
                         <div class="card" style="width:34em; margin-left: 4em">
                             <form action="{% url 'main:add_disaster' %}" method="post" style="padding: 1.5em">
                                 {% csrf_token %}
-                                <div class="form-group col-md-6 mb-3">
+                                <div class="form-group row-md-12 mb-3">
                                     <div class="form-inline">
-                                        <label for="disasterName" style="margin-right:6.2em">Disaster Name</label>
+                                        <label for="disasterName" style="margin-right:6.2em;margin-left: 1em;">Disaster Name</label>
                                         <input type="text" class="form-control" id="inputName" placeholder="Enter disaster name" name="name">
                                     </div>
                                 </div>
@@ -104,9 +104,9 @@
                                         <label class="form-check-label" for="disasterInctive">Inactive</label>
                                     </div>
                                 </div>
-                                <div class="form-group col-md-6 mb-3">
+                                <div class="form-group row-md-6 mb-3">
                                     <div class="form-inline">
-                                        <label for="disasterScale" style="margin-right:1em">Disaster on a scale of 1-10</label>
+                                        <label for="disasterScale" style="margin-right:1em;margin-left: 1em;">Disaster on a scale of 1-10</label>
                                         <input type="text" class="form-control" id="inputScale" placeholder="Enter disaster scale" name="scale">
                                     </div>
                                 </div>
@@ -131,34 +131,14 @@
                                         <!-- </div> -->
                                     <!-- </div> -->
                                 </div>
-                                <br />
-                                <div class="col-xs-12" style=" overflow-y:scroll; height:15em;">
-                                    <div class="row" >
-                                        <div class="form-inline">
-                                            <label for="disasterCoordinates" style="margin-right:9em">Latitude </label>
-                                            <input type="text" class="form-control" id="inputLatitude" placeholder="Enter Latitude" name="latitude">
-                                        </div>
-                                        <br/>
-                                        <div class="form-inline">
-                                            <label for="disasterCoordinates" style="margin-right:8.2em">Longitude </label>
-                                            <input type="text" class="form-control" id="inputLongitude" placeholder="Enter Longitude" name="longitude">
-                                        </div>
-                                        <br/>
-                                        <div class="form-inline">
-                                            <label for="disasterCoordinates" style="margin-right:9.6em">Radius </label>
-                                            <input type="text" class="form-control" id="inputRadius" placeholder="Enter Radius" name="radius">
-                                        </div>
-                                    <!-- </div> -->
-                                <!-- </div> -->
-                            </div>
                             <br/>
-                            <div class="col-md-12" >
-                                <div class="col-md-12 form-inline" style="padding-left:0px">
-                                <p style="padding-left:0px;margin-left:0px" class="col-md-2"> Category </p>
-                                <div class="col-md-6" id="field">
+                            <div class="col-md-20" >
+                                <div class="row-md-15 form-inline">
+                                <p style="padding-left:0px;margin-left:0.6em; margin-right: 6em;" class="col-md-2"> Category </p>
+                                <div class="col-md-4" id="field">
                                     <div id="disasterCategory">
                                         <div class="form-group">
-                                            <div class="col-md-5">
+                                            <div class="col-md-8">
                                                 <select id="disasterCategory" name="disasterCategory" type="text" class="form-control input-md">
                                                         <option value="Earthquake">Earthquake</option>
                                                         <option value="Flood">Flood</option>
@@ -175,34 +155,34 @@
                                 </div>
                                 <div class="col-md-4"></div>
                             </div>
+                            </div>
                             <br />
-                            <div class="col-xs-12">
-                                <div class="col-md-12" >
-                                    <div class="form-inline">
-                                    <p> Locations Affected </p>
-                                    <div class="" id="field">
-                                        <div id="field0">
-                                            <div class="form-group">
-                                                <div class="col-md-5">
-                                                    <select id="location0" name="location" type="text" class="form-control input-md">
-                                                        {% for loc in location_names %}
-                                                            <option value="{{ loc }}">{{ loc }}</option>
-                                                        {% endfor %}
-                                                    </select>
-                                                </div>
+                            <div class="col-md-40" >
+                                <div class="row-md-30 form-inline">
+                                <p style="margin-left:0em; margin-right: 1em;margin-top:0em" class="col-md-"> Locations Affected </p>
+                                <div class="" id="field">
+                                    <div id="field0">
+                                        <div class="form-group">
+                                            <div class="row-md-5">
+                                                <select id="location0" name="location" type="text" class="form-control input-md">
+                                                    {% for loc in location_names %}
+                                                        <option value="{{ loc }}">{{ loc }}</option>
+                                                    {% endfor %}
+                                                </select>
                                             </div>
                                         </div>
-                                        <div class="form-group col-md-9 mb-9">
-                                            <div class="col-md-9">
-                                                <button id="add-more" name="add-more" class="btn btn-dark">Add More</button>
-                                            </div>
+                                    </div>
+                                    <div class="form-group col-md-9 mb-9">
+                                        <div class="col-md-9">
+                                            <button id="add-more" name="add-more" class="btn btn-dark">Add More</button>
                                         </div>
-                                        <div class="col-4"></div>
                                     </div>
-                                    </div>
-                                        <br><br>
-                                    </div>
-                                    <button type="submit" class="btn btn-elegant" style="width:50%; margin-left: 7em; color: white">Submit</button>
+                                    <div class="col-4"></div>
+                                </div>
+                                </div>
+                                    <br><br>
+                                </div>
+                                <button type="submit" class="btn btn-elegant" style="width:50%; margin-left: 7em; color: white">Submit</button>
                             </form>
                         </div>
                         </div>
