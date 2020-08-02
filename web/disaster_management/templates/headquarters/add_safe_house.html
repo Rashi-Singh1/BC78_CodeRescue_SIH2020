@@ -46,8 +46,8 @@
 	<div class="wrapper">
 		<nav id="sidebar" class="sidebar">
             <div class="sidebar-content js-simplebar">
-                
-                <span class="align-middle sidebar-brand">Dashboard</span>  
+
+                <span class="align-middle sidebar-brand">Dashboard</span>
 
                 <ul class="sidebar-nav" style="width:30em">
 
@@ -74,24 +74,79 @@
                         <i class="align-middle" data-feather="send"></i> <span class="align-middle">Send Notification</span>
                         </a>
 					</li>
-                    
+
                     <li class="sidebar-item active">
 						<a class="sidebar-link" href="{% url 'main:add_safe_house' %}">
                         <i class="align-middle" data-feather="home"></i> <span class="align-middle">Add Safe House</span>
                         </a>
                     </li>
-                    
+
                 </ul>
             </div>
         </nav>
-
-		<div class="main">
+        <div class="main">
 			<main class="content">
-				
+				<div class="container-fluid p-0">
+
+					<div class="row mb-2 mb-xl-3">
+						<div class="col-auto d-none d-sm-block">
+							<h3 style="margin-left: 15em"><strong>Add Safehouse</strong></h3>
+						</div>
+                    </div>
+                    <hr>
+                    <div class="container" style="margin-left: 10em; display: inline-block;">
+                        <div class="card" style="width:34em; margin-left: 4em">
+                            <form action="{% url 'main:add_disaster' %}" method="post" style="padding: 1.5em">
+                                {% csrf_token %}
+                                <div class="form-group row-md-12 mb-3">
+                                    <div class="form-inline">
+                                        <label for="disasterName" style="margin-right:4.7em;margin-left: 1em;">Safehouse Name</label>
+                                        <input type="text" class="form-control" id="inputName" placeholder="Enter Safehouse name" name="name">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <label for="disasterCoordinates">Safehouse Coordinates: </label><br />
+                                    <div class="form-inline">
+                                        <label for="disasterCoordinates" style="margin-right:9em">Latitude </label>
+                                        <input type="text" class="form-control" id="inputLatitude" placeholder="Enter Latitude" name="latitude">
+                                    </div>
+                                    <br/>
+                                    <div class="form-inline">
+                                        <label for="disasterCoordinates" style="margin-right:8.2em">Longitude </label>
+                                        <input type="text" class="form-control" id="inputLongitude" placeholder="Enter Longitude" name="longitude">
+                                    </div>
+                                <!-- </div> -->
+                            <!-- </div> -->
+                        </div>
+                            <br />
+                            <div class="col-md-40" >
+                                <div class="row-md-30 form-inline" style="margin-left:1em">
+                                <p style="margin-left:0em; margin-right: 3.8em;margin-top:0em"> Locations Affected </p>
+                                <div class="" id="field">
+                                    <div id="field0">
+                                        <div class="form-group">
+                                            <div class="row-md-5">
+                                                <select id="location0" name="location" type="text" class="form-control input-md">
+                                                    {% for loc in location_names %}
+                                                        <option value="{{ loc }}">{{ loc }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                                    <br><br>
+                                </div>
+                                <button type="submit" class="btn btn-elegant" style="width:50%; margin-left: 7em; color: white">Submit</button>
+                            </form>
+                        </div>
+                        </div>
+                    </div>
+
+				</div>
 			</main>
 		</div>
-	</div>
-
 	<script src="{% static 'main/js/app.js' %}"></script>
 
 {% endblock %}
