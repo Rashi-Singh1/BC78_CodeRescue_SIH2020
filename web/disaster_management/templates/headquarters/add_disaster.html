@@ -95,9 +95,9 @@
 						</div>
                     </div>
                     <hr>
-                    <div class="container" style="margin-left: 10em; display: inline-block;">
-                        <div class="card" style="width:34em; margin-left: 4em">
-                            <form action="{% url 'main:add_disaster' %}" method="post" style="padding: 1.5em">
+                    <div class="container" style="margin-left: 12em; display: inline-block;">
+                        <div class="card" style="width:31em; margin-left: 6em">
+                            <form action="{% url 'main:add_disaster' %}" method="post" style="padding: 1.5em; align-items: center;">
                                 {% csrf_token %}
                                 <div class="form-group row-md-12 mb-3">
                                     <div class="form-inline">
@@ -105,16 +105,23 @@
                                         <input type="text" class="form-control" id="inputName" placeholder="Enter disaster name" name="name" style="width: 13em">
                                     </div>
                                 </div>
-                                <div class="form-group col-md-6 mb-3">
-                                    <div class="form-check form-check-inline" >
-                                        <input class="form-check-input" type="radio" name="activeStatus" id="disasterActive" value="1" checked>
-                                        <label class="form-check-label" for="disasterActive">Active</label>
+                                <div class="form-group col-md-6 mb-3" style="display:flex;">
+
+                                    <div style="display:inline-block; margin-right: 2em;">
+                                      <label for="disasterActive" class="container radioContainer">Active
+                                        <input type="radio" checked id="disasterActive" name="activeStatus" value="1">
+                                        <span class="checkmark"></span>
+                                      </label>
                                     </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="activeStatus" id="disasterInctive" value="0">
-                                        <label class="form-check-label" for="disasterInctive">Inactive</label>
+
+                                    <div style="display:inline-block;">
+                                      <label for="disasterInctive" class="container radioContainer">Inactive
+                                        <input type="radio" id="disasterInctive" name="activeStatus" value="0">
+                                        <span class="checkmark"></span>
+                                      </label>
                                     </div>
-                                </div>
+
+                                  </div>
                                 <div class="form-group row-md-6 mb-3">
                                     <div class="form-inline">
                                         <label for="disasterScale" style="margin-right:1em;margin-left: 1em;">Disaster on a scale of 1-10</label>
@@ -126,17 +133,17 @@
                                         <div class="col">
                                             <label for="disasterCoordinates">Disaster Coordinates: </label><br />
                                             <div class="form-inline">
-                                                <label for="disasterCoordinates" style="margin-right:9em">Latitude </label>
+                                                <label for="disasterCoordinates" style="margin-right:9.2em">Latitude </label>
                                                 <input type="text" class="form-control" id="inputLatitude" placeholder="Enter Latitude" name="latitude" style="width: 13em">
                                             </div>
                                             <br/>
                                             <div class="form-inline">
-                                                <label for="disasterCoordinates" style="margin-right:8.2em">Longitude </label>
+                                                <label for="disasterCoordinates" style="margin-right:8.3em">Longitude </label>
                                                 <input type="text" class="form-control" id="inputLongitude" placeholder="Enter Longitude" name="longitude" style="width: 13em">
                                             </div>
                                             <br/>
                                             <div class="form-inline">
-                                                <label for="disasterCoordinates" style="margin-right:9.6em">Radius </label>
+                                                <label for="disasterCoordinates" style="margin-right:9.7em">Radius </label>
                                                 <input type="text" class="form-control" id="inputRadius" placeholder="Enter Radius" name="radius" style="width: 13em">
                                             </div>
                                         <!-- </div> -->
@@ -145,8 +152,8 @@
                             <br/>
                             <div class="col-md-20" >
                                 <div class="row-md-15 form-inline">
-                                <p style="padding-left:0px;margin-left:0.6em; margin-right: 5.8em;" class="col-md-2"> Category </p>
-                                <div class="col-md-4" id="field">
+                                <p style="padding-left:0px;margin-left:0.6em; margin-right: 4.2em;" class="col-md-3"> Category </p>
+                                <div class="col" id="field">
                                     <div id="disasterCategory">
                                         <div class="form-group">
                                             <div class="col-md-8">
@@ -167,10 +174,9 @@
                                 <!-- <div class="col-md-4"></div> -->
                             </div>
                             </div>
-                            <br />
                             <div class="col-md-20" >
                                 <div class="row-md-15 form-inline">
-                                <p style="padding-left: 0px;margin-left:0.6em;margin-right: 0px" class="col-md-5"> Locations Affected </p>
+                                <p style="padding-left: 0px;margin-left:0.6em;margin-right: 1.4em" class="col-md-5"> Locations Affected </p>
                                 <div class="col" id="field">
                                     <div id="field0">
                                         <div class="form-group">
@@ -195,7 +201,7 @@
                                 <br/>
                                 <br/>
                                 <br/>
-                                <button type="submit" class="btn btn-elegant" style="width:50%; margin-left: 7em; color: white">Submit</button>
+                                <button type="submit" class="btn btn-elegant" style="width:60%; margin-left: 5em; color: white">Submit</button>
                             </form>
                         </div>
                         </div>
