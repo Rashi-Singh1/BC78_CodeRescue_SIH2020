@@ -13,5 +13,6 @@ urlpatterns = [
     path('headquarters/dashboard/all_disasters', views.all_disasters, name = 'all_disasters'),
     path('headquarters/dashboard/all_disasters/change_active_status', views.change_active_status, name='change_active_status'),
     path('headquarters/account/logout', views.headquartersLogout, name = 'logout'),
-    path('headquarters/dashboard/send_notification', views.send_notification, name = 'send_notification')
+    path('headquarters/dashboard/send_notification', views.send_notification, name = 'send_notification'),
+    path('headquarters/dashboard/disaster/<str:disaster_id>/update_statistics', views.update_statistics, name='update_statistics')
 ]

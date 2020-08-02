@@ -302,3 +302,45 @@ def send_notification(request):
     }
 
     return render(request, 'headquarters/send_notification.html', context)
+
+def update_statistics(request, disaster_id):
+    if request.method == "GET":
+        client = connect()
+        db = client.main.disaster
+        disaster = list(db.find({ "id" : disaster_id }))[0]
+        stats = {}
+        if 'statistics' in disaster:
+            stats = disaster['statistics']
+        total_stats = {
+            'affected' : 0,
+            'deaths' : 0
+        }
+
+        daily_stats = []
+        for key, value in stats.items():
+            if key == 'total':
+                total_stats = stats['total']
+            else:
+                daily_stats.append(value)
+
+        if not daily_stats:
+            daily_stats = [
+                {
+                    'affected' : 0,
+                    'deaths' : 0
+                }
+            ]
+
+        print(daily_stats)
+        context = {
+            "disaster_id" : disaster_id,
+            "disaster_name" : disaster['name'],
+            "location" : disaster['location'],
+            "total_stats" : total_stats,
+            "daily_stats" : daily_stats
+        }
+
+        if request.session.get('isHeadquartersLoggedIn' , None) == 1 :
+            context['isHeadquartersLoggedIn']=1
+
+        return render(request, 'headquarters/update_statistics.html', context)
