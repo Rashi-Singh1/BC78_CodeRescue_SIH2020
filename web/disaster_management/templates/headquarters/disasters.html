@@ -18,6 +18,10 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 
+    <!-- <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script> -->
+
 {% endblock %}
 
 {% block css %}
@@ -57,6 +61,51 @@ input[type=text]:focus {
 .navbar {
     padding-top: 0px ;
     padding-bottom: 0px;
+}
+
+.material-switch > input[type="checkbox"] {
+    display: none;   
+}
+
+.material-switch > label {
+    cursor: pointer;
+    height: 0px;
+    position: relative; 
+    width: 40px;  
+}
+
+.material-switch > label::before {
+    background: #343a40;
+    box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    content: '';
+    height: 16px;
+    margin-top: -8px;
+    position:absolute;
+    opacity: 0.3;
+    transition: all 0.4s ease-in-out;
+    width: 40px;
+}
+.material-switch > label::after {
+    background: rgb(255, 255, 255);
+    border-radius: 16px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+    content: '';
+    height: 24px;
+    left: -4px;
+    margin-top: -8px;
+    position: absolute;
+    top: -4px;
+    transition: all 0.3s ease-in-out;
+    width: 24px;
+}
+.material-switch > input[type="checkbox"]:checked + label::before {
+    background: inherit;
+    opacity: 0.5;
+}
+.material-switch > input[type="checkbox"]:checked + label::after {
+    background: #343a40;
+    left: 20px;
 }
 
 </style>
@@ -135,12 +184,17 @@ input[type=text]:focus {
                               <tbody>
                                 {% for disaster in disasters_data %}
                                     <tr class="disasters">
-                                      <td><label for="{{ disaster.id }}"> {{ disaster.name }}</label></td>
-                                      <td>{% for loc in disaster.location %}
-                                        {{loc}},
-                                    {% endfor %}</td>
-                                      <td><input type="checkbox" class = "disasterClass" id="{{ disaster.id }}" name="{{ disaster.id }}"
-                                        value="{{ disaster.id }}" {% if disaster.isactive == 1 %} checked {% endif %}></td>
+                                        <td><label for="{{ disaster.id }}"> {{ disaster.name }}</label></td>
+                                        <td>{% for loc in disaster.location %}
+                                                {{loc}},
+                                            {% endfor %}
+                                        </td>
+                                        <td>
+                                            <div class="material-switch">
+                                                <input id="{{ disaster.id }}" name="{{ disaster.id }}" type="checkbox" class="disasterClass" value="{{ disaster.id }}" {% if disaster.isactive %} checked {% endif %}/>
+                                                <label for="{{ disaster.id }}" class="label-default"></label>
+                                            </div>
+                                        </td>
                                     </tr>
                                 {% endfor%}
                               </tbody>
