@@ -388,6 +388,9 @@ def send_notification(request):
         "success" : success ,
         "active_disasters" : active_disasters
     }
+    if request.session.get('isHeadquartersLoggedIn' , None) == 1 :
+        context['isHeadquartersLoggedIn']=1
+
 
     return render(request, 'headquarters/send_notification.html', context)
 
