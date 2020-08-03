@@ -112,13 +112,14 @@
   </div>
   
   
-<div class="container">
+<div class="">
     <div class="row">
-
-    <div class="col-md-6">
-        <div class="dropdown">
+    <div class="col-md-1"></div>
+    <div class="col-md-7">
+        <div class="dropdown " style='width:17em'>
         <h5 style="padding: 0.6em ; text-align: center; background-color:#444246;" class="jumbotron">
             <label><b style="color:whitesmoke; margin-right:0.5em;">Choose Disaster</b></label>
+            <br>
         <button style="width:200px; padding: 10px 20px 10px 20px; margin: 0px 0px 0px 0px;" class="btn btn-white dropdown-toggle" type="button" id="dropdownMenuMenu" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">
             All Disasters
@@ -135,13 +136,13 @@
         </div>
         <br>
     </div>
-    <div class="col-md-6" >
-        <form id='locform' method = "POST" action = "{% url 'main:getUserLocation' %}" style="margin-left: 17em;padding:0.1em">
+    <div class="col-md-3" style="padding-left:4%">
+        <form id='locform' method = "POST" action = "{% url 'main:getUserLocation' %}" >
         {% csrf_token %}
             <!-- <label>Current State :</label><br> -->
             <div class="dropdown">
             <h5 style="padding: 0.6em ; text-align: center; background-color:#444246; width:14em" class="jumbotron">
-                <label><b style="color:whitesmoke; margin-right:0.5em;">Choose Location for displaying notifications</b></label>
+                <label><b style="color:whitesmoke; margin-right:0.5em;">Choose Location</b></label>
                 <button style="width:200px; padding: 10px 20px 10px 20px; margin: 0px 0px 0px 0px;" class="btn btn-white dropdown-toggle" type="button" id="dropdownLocation" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
                 {% if locationName %}
@@ -161,6 +162,8 @@
             </div>
     </form>
     </div>
+    <div class="col-md-1" ></div>
+
     </div>
 </div>
 <br/>
