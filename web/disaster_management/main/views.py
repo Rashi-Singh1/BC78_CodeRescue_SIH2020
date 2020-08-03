@@ -79,7 +79,7 @@ def index(request , latitude='' , longitude='' , cityUser=''):
 
     if latitude != '' and longitude != '' and cityUser != '':
         dataSafeHouses = list(client.main.safeHouses.find({ 'state': cityUser }))
-        if request.session.has_key('locationIndex'):
+        if latitude==1 and request.session.has_key('locationIndex'):
             print(cityUser)
             if cityUser == 'undefined':
                 locName = request.session['locationName']
