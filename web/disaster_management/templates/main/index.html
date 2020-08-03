@@ -38,11 +38,14 @@
         width: 80% !important;
         margin:auto;
         margin-top:5%;
+        display:none;
+
     }
     #peopleKilled{
         width: 80% !important;
         margin:auto;
         margin-top:5%;
+        display:none;
     }
     .modal-dialog{
         min-width:1000px;
@@ -222,8 +225,8 @@
 <br/>
 <br/>
 <div class="container">
-    <canvas id="pieChart" style="max-width: 750px; margin: auto; visibility: hidden;"></canvas>
-    <h5 id="pieChartLabel" style="margin: auto;visibility: hidden;text-align: center; padding-top: 1em;">Count of people affected and deaths</h5>
+    <canvas id="pieChart" style="max-width: 750px; margin: auto; display: none;"></canvas>
+    <h5 id="pieChartLabel" style="margin: auto;display: none;text-align: center; padding-top: 1em;">Count of people affected and deaths</h5>
 </div>
 
 <script>
@@ -347,6 +350,8 @@
 
     function dropdownButtonClicked(value,value2){
         document.getElementById('dropdownMenuMenu').innerText= value2;
+        document.getElementById('peopleKilled').style.display= "none";
+        document.getElementById('peopleAffected').style.display= "none";
 
         // Draw charts
         drawChartPeopleAffected(value);
@@ -430,6 +435,7 @@
         };
         var chartPeopleAffected = new google.charts.Line(document.getElementById('peopleAffected'));
         chartPeopleAffected.draw(data_for_chart, google.charts.Line.convertOptions(options));
+        document.getElementById('peopleAffected').style.display= "block";
         return;
     }
 
@@ -477,6 +483,8 @@
 
         var chartPeopleKilled = new google.charts.Line(document.getElementById('peopleKilled'));
         chartPeopleKilled.draw(data_for_chart, google.charts.Line.convertOptions(options));
+        document.getElementById('peopleKilled').style.display= "block";
+
         return;
     }
 
@@ -546,8 +554,8 @@
         var deaths = 0;
         var disaster_name = value;
         if( disaster_name == "all_disasters" )  {
-            document.getElementById("pieChart").style.visibility = "hidden";
-            document.getElementById("pieChartLabel").style.visibility = "hidden";
+            document.getElementById("pieChart").style.display = "none";
+            document.getElementById("pieChartLabel").style.display = "none";
 
             return;
         }
@@ -576,8 +584,8 @@
             }
         });
 
-        document.getElementById("pieChart").style.visibility = "visible";
-        document.getElementById("pieChartLabel").style.visibility = "visible";
+        document.getElementById("pieChart").style.display = "block";
+        document.getElementById("pieChartLabel").style.display = "block";
     }
 
     $(window).on('shown.bs.modal', function() {
