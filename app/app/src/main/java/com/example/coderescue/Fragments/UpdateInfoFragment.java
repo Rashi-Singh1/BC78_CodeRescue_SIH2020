@@ -3,6 +3,7 @@ package com.example.coderescue.Fragments;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,6 +11,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.os.Looper;
+import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +26,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -31,7 +34,11 @@ import androidx.fragment.app.Fragment;
 import com.example.coderescue.Activities.HomeActivity;
 import com.example.coderescue.Activities.SendMessageActivity;
 import com.example.coderescue.Activities.UpdateInfoActivity;
+import com.example.coderescue.Adapters.DisasterSpinnerAdapter;
+import com.example.coderescue.Classes.DisasterSpinnerCardModel;
 import com.example.coderescue.Classes.NetworkConnectivity;
+import com.example.coderescue.Classes.ReceiveMessageUtility;
+import com.example.coderescue.Classes.SendMessageUtility;
 import com.example.coderescue.R;
 import com.example.coderescue.VictimHomeAdapter;
 import com.example.coderescue.VictimHomeCardModel;
@@ -66,7 +73,7 @@ import static android.app.Activity.RESULT_OK;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 
-public class UpdateInfoFragment extends Fragment {
+public class UpdateInfoFragment extends Fragment{
 
     EditText victim_count, location;
     Spinner spinner;
@@ -76,10 +83,21 @@ public class UpdateInfoFragment extends Fragment {
     TextView latitude, longitude;
     Double lat = 0.0, lon = 0.0;
     private static final int REQUEST_CODE_LOCATION_PERMISSION = 1;
-    ArrayList<String> arrayList;
+    private static final int REQUEST_CODE_SPEECH_INPUT = 1000;
+
+    //    ArrayList<String> arrayList;
     ArrayList<String> arrayList2;
+    ArrayList<DisasterSpinnerCardModel> disasterCategories;
+
     ArrayAdapter<String> arrayAdapter;
+    DisasterSpinnerAdapter disasterSpinnerAdapter;
     String dis_id;
+
+    EditText msg_input;
+    soup.neumorphism.NeumorphImageButton voiceBtn2;
+    CardView send;
+    Double dLat , dLong;
+    public static String state;
 
     @Nullable
     @Override
@@ -94,26 +112,28 @@ public class UpdateInfoFragment extends Fragment {
         String apiKey = "AIzaSyDYoQybddM6c-Daz0bHVe7h2tuyzxHmW1k";
 
         spinner = root.findViewById(R.id.spinner);
-        arrayList = new ArrayList<>();
+//        arrayList = new ArrayList<>();
         arrayList2 = new ArrayList<>();
 
-                arrayList.add("JAVA");
-                arrayList2.add("lol");
-//        arrayList.add("ANDROID");
-//        arrayList.add("C Language");
-//        arrayList.add("CPP Language");
-//        arrayList.add("Go Language");
-//        arrayList.add("AVN SYSTEMS");
-//
-        arrayAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, arrayList);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(arrayAdapter);
+//        arrayList.add("JAVA");
+        arrayList2.add("lol");
+
+        disasterCategories = new ArrayList<>();
+        disasterSpinnerAdapter = new DisasterSpinnerAdapter(getActivity(), disasterCategories);
+        disasterSpinnerAdapter.add(new DisasterSpinnerCardModel("Earthquake", R.drawable.disaster_earthquake ));
+        disasterSpinnerAdapter.setDropDownViewResource(R.layout.disaster_spinner_item);
+
+//        arrayAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, arrayList);
+//        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         getDisasters();
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 //                String tutorialsName = parent.getItemAtPosition(position).toString();
-//                Toast.makeText(parent.getContext(), "Selected: " + arrayList2.get(position),          Toast.LENGTH_LONG).show();
+//                Toast.makeText(parent.getContext(), "Selected: " + arrayList2.get(position),          Toast.LENGTH_LONG).show();                  Dis
+                DisasterSpinnerCardModel item = (DisasterSpinnerCardModel) parent.getSelectedItem();
                 dis_id = arrayList2.get(position);
                 System.out.println(dis_id + "cur disaster");
 
@@ -161,7 +181,15 @@ public class UpdateInfoFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
+        if(requestCode == REQUEST_CODE_SPEECH_INPUT){
+            if (resultCode == -1 && null!=data){
+                ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                String spoken = result.get(0);
+                msg_input.setText(spoken);
+                send.performClick();
+            }
+        }
+        else if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
             Place place = Autocomplete.getPlaceFromIntent(data);
             location.setText(place.getAddress());
             DecimalFormat df = new DecimalFormat("#.########");
@@ -176,6 +204,110 @@ public class UpdateInfoFragment extends Fragment {
             Status status = data == null ? null : Autocomplete.getStatusFromIntent(data);
             Log.e(TAG, (status == null || status.getStatusMessage() == null) ? "null" : status.getStatusMessage());
         }
+
+
+    }
+
+    public void send_message_dialog() {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
+        View mView = getLayoutInflater().inflate(R.layout.message_dialog, null);
+
+        msg_input = mView.findViewById(R.id.msg_input);
+        voiceBtn2 = mView.findViewById(R.id.voiceBtn2);
+        send = mView.findViewById(R.id.send_msg);
+
+        if (ContextCompat.checkSelfPermission(
+                getActivity(), Manifest.permission.ACCESS_FINE_LOCATION
+        ) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_LOCATION_PERMISSION);
+        } else {
+            getCurrentLocation_Send_Message();
+        }
+
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String inital = "";
+                if (dLat != -1) {
+                    inital += "Latitude: " + dLat + "\n" + "Longitude: " + dLong + "\n";
+                }
+                inital += "Message: \n";
+                String message = inital + msg_input.getText().toString();
+                SendMessageUtility.sendMessage(getActivity(), getActivity(), message);
+                String toastText = "Message sent successfully";
+                Toast.makeText(getActivity(), toastText, Toast.LENGTH_SHORT).show();
+                msg_input.setText("");
+            }
+        });
+
+        voiceBtn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                speak();
+            }
+        });
+
+        mBuilder.setView(mView);
+        AlertDialog dialog = mBuilder.create();
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.show();
+    }
+
+    private void speak(){
+
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Hi speak something");
+
+        try {
+            startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT);
+        }
+        catch (Exception e){
+            Toast.makeText(getActivity(), ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private void getCurrentLocation_Send_Message() {
+        LocationRequest locationRequest = new LocationRequest();
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(3000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        LocationServices.getFusedLocationProviderClient(getActivity())
+                .requestLocationUpdates(locationRequest, new LocationCallback() {
+                    @Override
+
+                    public void onLocationResult(LocationResult locationResult) {
+                        super.onLocationResult(locationResult);
+                        LocationServices.getFusedLocationProviderClient(getActivity())
+                                .removeLocationUpdates(this);
+                        if (locationResult != null && locationResult.getLocations().size() > 0) {
+                            int latestLocationIndex = locationResult.getLocations().size() - 1;
+                            dLat = locationResult.getLocations().get(latestLocationIndex).getLatitude();
+                            dLong = locationResult.getLocations().get(latestLocationIndex).getLongitude();
+                            System.out.println("aagyi location");
+                            Geocoder gcd = new Geocoder(getActivity(),
+                                    Locale.getDefault());
+                            List<Address> addresses;
+                            try {
+                                addresses = gcd.getFromLocation(dLat,
+                                        dLong, 1);
+                                if (addresses.size() > 0) {
+                                    state = addresses.get(0).getAdminArea();
+                                }
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }, Looper.getMainLooper());
     }
 
     public void updateVictimInfo() {
@@ -187,8 +319,11 @@ public class UpdateInfoFragment extends Fragment {
         Toast.makeText(getActivity(), toastText, Toast.LENGTH_LONG).show();
 
         if (!NetworkConnectivity.isInternetAvailable(getActivity())) {
-            Intent intent = new Intent(getActivity(), SendMessageActivity.class);
-            startActivity(intent);
+//            Intent intent = new Intent(getActivity(), SendMessageActivity.class);
+//            startActivity(intent);
+
+            send_message_dialog();
+
         } else {
             int count = Integer.parseInt(victim_count.getText().toString().trim());
 
@@ -313,18 +448,22 @@ public class UpdateInfoFragment extends Fragment {
             public void onComplete(@androidx.annotation.NonNull Task<List<Document>> task) {
                 if (task.isSuccessful()) {
                     List<Document> items = task.getResult();
-                    arrayList.clear();
+                    disasterCategories.clear();
                     arrayList2.clear();
                     for(Document i: items){
                         String dis_name = i.getString("name");
                         String dis_id = i.getString("id");
-                        arrayList.add(dis_name);
+//                        arrayList.add(dis_name);
+                        disasterCategories.add(new DisasterSpinnerCardModel(dis_name, getDisasterSpinnerDrawable(i.getString("category").toLowerCase())));
                         arrayList2.add(dis_id);
                         System.out.println(i);
                     }
-                    arrayAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, arrayList);
-                    arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spinner.setAdapter(arrayAdapter);
+                    disasterSpinnerAdapter = new DisasterSpinnerAdapter(getActivity(), disasterCategories);
+                    disasterSpinnerAdapter.setDropDownViewResource(R.layout.disaster_spinner_item);
+//                    arrayAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, arrayList);
+//                    arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                    spinner.setAdapter(arrayAdapter);
+                    spinner.setAdapter(disasterSpinnerAdapter);
                 } else {
                     Log.e("app", "Failed to count documents with exception: ", task.getException());
                 }
@@ -334,6 +473,57 @@ public class UpdateInfoFragment extends Fragment {
 
 
         System.out.println("wow2");
+    }
+
+    public int getDisasterSpinnerDrawable(String category){
+        switch (category){
+            case "avalanche": return R.drawable.disaster_avalanche;
+            case "blizzard": return  R.drawable.disaster_blizzard;
+            case "desertification": return  R.drawable.disaster_desertification;
+            case "earthquake": return  R.drawable.disaster_earthquake;
+            case "flood": return  R.drawable.disaster_flood;
+            case "hurricane": return  R.drawable.disaster_hurricane;
+            case "landslide": return  R.drawable.disaster_landslide;
+            case "meteorites": return  R.drawable.disaster_meteorite;
+            case "rain": return  R.drawable.disaster_rain;
+            case "smog": return  R.drawable.disaster_smog;
+            case "snow": return  R.drawable.disaster_snow;
+            case "thunderstorm": return  R.drawable.disaster_thunderstorm;
+            case "tornado": return  R.drawable.disaster_tornado;
+            case "toxic": return  R.drawable.disaster_toxic;
+            case "tsunami": return  R.drawable.disaster_tsunami;
+            case "virus": return  R.drawable.disaster_virus;
+            case "volcano": return  R.drawable.disaster_volcano;
+            case "wind": return  R.drawable.disaster_wind;
+            default: return R.drawable.disaster_alarm;
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case SendMessageUtility.REQUEST_CODE_SEND_MESSAGE_PERMISSION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (!NetworkConnectivity.isInternetAvailable(getActivity())) {
+                        SendMessageUtility.sendMessage(getActivity(), getActivity(), "testing send message");
+                    }
+                } else {
+                    Toast.makeText(getActivity(), "You don't have the required permissions for sending text messages", Toast.LENGTH_SHORT).show();
+                }
+            case ReceiveMessageUtility.REQUEST_CODE_RECEIVE_MESSAGE_PERMISSION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //TODO: add code here
+                } else {
+                    Toast.makeText(getActivity(), "You don't have the required permissions for receiving text messages", Toast.LENGTH_SHORT).show();
+                }
+            case REQUEST_CODE_LOCATION_PERMISSION:
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    getCurrentLocation_Send_Message();
+                }
+                else  Toast.makeText(getActivity(), "Permission Denied", Toast.LENGTH_SHORT).show();
+
+        }
     }
 
 }
