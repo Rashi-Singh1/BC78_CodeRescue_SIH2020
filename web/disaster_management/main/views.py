@@ -79,13 +79,33 @@ def index(request , latitude='' , longitude='' , cityUser=''):
 
     if latitude != '' and longitude != '' and cityUser != '':
         dataSafeHouses = list(client.main.safeHouses.find({ 'state': cityUser }))
-        print(cityUser)
-        if cityUser == 'undefined':
-            context['nearest_safe_house'] = {
-                'latitude': "undefined" ,
-                'longitude': "undefined",
-            }
-            context['errorMessage'] = "Please allow location access to find nearest safe house."
+        if request.session.has_key('locationIndex'):
+            print(cityUser)
+            if cityUser == 'undefined':
+                locName = request.session['locationName']
+                dataSafeHouses = list(client.main.safeHouses.find({ 'state': locName }))
+                if len(dataSafeHouses) == 0:
+                    context['nearest_safe_house'] = {
+                        'latitude': "undefined" ,
+                        'longitude': "undefined",
+                    }
+                    context['errorMessage'] = "Sorry, no safe houses found near the selected location."
+                else:
+                    listSafeHousesInUserLocation = dataSafeHouses[0]['safehouse']
+                    context['listSafeHouses'] = listSafeHousesInUserLocation
+                    context['nearest_safe_house'] = {
+                        'latitude': "undefined" ,
+                        'longitude': "undefined",
+                        'flag': 1,
+                    }
+                    context['errorMessage'] = "Your location couldn't be found. Showing all safe houses in the selected state."
+            else:
+                context['nearest_safe_house'] = {
+                    'latitude': "undefined" ,
+                    'longitude': "undefined",
+                }
+                context['errorMessage'] = "Your location couldn't be found. Please select a location from the dropdown to see safehouses."
+        
 
         elif len(dataSafeHouses) == 0:
             context['nearest_safe_house'] = {

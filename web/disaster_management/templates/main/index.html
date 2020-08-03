@@ -95,9 +95,12 @@
         </div>
         <div class="modal-body">
           {% if nearest_safe_house.latitude != 'undefined' %}
-          <div  style="width:100%; height:500px" id="nearestSafeHouseMap"></div>
+            <div  style="width:100%; height:500px" id="nearestSafeHouseMap"></div>
+          {% elif nearest_safe_house and nearest_safe_house.flag %}
+            <h5> {{ errorMessage }}</h5>
+            <div  style="width:100%; height:500px" id="allSafeHouseMap"></div>
           {% else %}
-          <h4 class="jumbotron"> {{ errorMessage }}</h4>
+            <h4 class="jumbotron"> {{ errorMessage }}</h4>
           {%endif%}
         </div>
         {% if nearest_safe_house.latitude != 'undefined' %}
@@ -243,8 +246,7 @@
             console.log(data.address);
             var state = data.address.state;
             console.log(state);
-            cityUser = state;
-            var url_mask = "{% url 'main:find_safe_house' '12345' '6789' 'undefined' %}".replace(/12345/, position.coords.latitude.toString()).replace(/6789/, position.coords.longitude.toString()).replace(/undefined/, cityUser);
+            var url_mask = "{% url 'main:find_safe_house' '12345' '6789' 'undefined' %}".replace(/12345/, position.coords.latitude.toString()).replace(/6789/, position.coords.longitude.toString()).replace(/undefined/, state);
             document.getElementById("find_nearest_safe_house_link").setAttribute('href' , url_mask);
         });
 
@@ -287,7 +289,6 @@
             console.log(data.address);
             var state = data.address.state;
             console.log(state);
-            cityUser = state;
             $('#location').val(state).change();
             $('#locform').submit();
         });
@@ -595,6 +596,8 @@
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
     }).addTo(map);
+    
+
     {% if nearest_safe_house and nearest_safe_house.latitude != 'undefined'  %}
     console.log(positionUser.latitude + " ## " +positionUser.longitude);
     console.log({{nearest_safe_house.latitude}} + " %% "+   {{nearest_safe_house.longitude}});
@@ -611,6 +614,33 @@
     {% if nearest_safe_house %}
         setTimeout(function () {
           $( "#launchModalButton" ).click();},1000);
+    {% endif %}
+
+    {% if nearest_safe_house and nearest_safe_house.latitude == 'undefined' and nearest_safe_house.flag   %}
+        var mymap;
+        {% if listSafeHouses %}
+            mymap = L.map('allSafeHouseMap').setView([{{listSafeHouses.0.latitude}}, {{listSafeHouses.0.longitude}}], 13);
+        {% else %}
+            mymap = L.map('allSafeHouseMap').setView([51.505, -0.09], 13);
+        {% endif %}
+        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        maxZoom: 13,
+        id: 'mapbox/streets-v11',
+        tileSize: 512,
+        zoomOffset: -1,
+        accessToken: 'pk.eyJ1IjoibW5rMzQzIiwiYSI6ImNrODY0Z3F2NDBhcW8zZ284Yjg3Z3Q2ZWoifQ.XR8nBDHgRGjJq6nOg0rZAQ'
+        }).addTo(mymap);
+
+        {% for object in listSafeHouses %}
+                // var marker = L.marker([51.5, -0.09]).addTo(mymap);
+                eval( 'var marker_' + {{forloop.counter}} + '= ' +
+                ' L.marker(' +
+                ' [' + {{object.latitude}} +','+ {{object.longitude}} +' ]).addTo(mymap);');
+                // eval('circle_' + disaster_values.id + '.bindPopup( "<b>'+disaster_values.name+'</b><br><b>Scale:</b>'+ disaster_values.scale+'<br><b>Total Affected: </b>'+disaster_values.statistics.total.affected+ '<br><b>Total Deaths: </b>'+disaster_values.statistics.total.deaths+'<br>" );');
+        {% endfor %}
+
+        
     {% endif %}
 
 </script>
