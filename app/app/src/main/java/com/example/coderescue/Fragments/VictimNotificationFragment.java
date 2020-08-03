@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.coderescue.Activities.GoogleMapActivity;
+import com.example.coderescue.Activities.ViewSafeHousesActivity;
 import com.example.coderescue.NotificationAdapter;
 import com.example.coderescue.NotificationCardModel;
 import com.example.coderescue.R;
@@ -48,14 +49,13 @@ import static com.mongodb.client.model.Filters.eq;
 
 public class VictimNotificationFragment extends Fragment {
 
-//    soup.neumorphism.NeumorphCardView safe_houses;
     ArrayList<NotificationCardModel> models = new ArrayList<>();
     NotificationCardModel m;
     public static RemoteMongoClient mongoClient;
     private static final int REQUEST_CODE_LOCATION_PERMISSION = 1;
     private static final int REQUEST_CODE_READ_PHONE_STATE_PERMISSION = 2;
-    soup.neumorphism.NeumorphButton button_ar_map;
-
+    soup.neumorphism.NeumorphButton safe_houses, button_ar_map;
+    double latitude, longitude;
     private ProgressBar prog;
     public static String state;
     RecyclerView mRecylcerView;
@@ -80,17 +80,20 @@ public class VictimNotificationFragment extends Fragment {
         }
 
         mRecylcerView=root.findViewById(R.id.recylcerView);
-//        safe_houses=root.findViewById(R.id.safe_houses);
+        safe_houses=root.findViewById(R.id.safe_houses);
         c = getActivity();
         mRecylcerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-//        safe_houses.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(getActivity(), ViewSafeHousesActivity.class);
-//                startActivity(intent);
-//            }
-//        });
+        safe_houses.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ViewSafeHousesActivity.class);
+                intent.putExtra("state", state);
+                intent.putExtra("lat", latitude);
+                intent.putExtra("long", longitude);
+                startActivity(intent);
+            }
+        });
 
         button_ar_map.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,8 +143,8 @@ public class VictimNotificationFragment extends Fragment {
                                 .removeLocationUpdates(this);
                         if(locationResult != null && locationResult.getLocations().size() > 0){
                             int latestLocationIndex = locationResult.getLocations().size() - 1;
-                            double latitude = locationResult.getLocations().get(latestLocationIndex).getLatitude();
-                            double longitude = locationResult.getLocations().get(latestLocationIndex).getLongitude();
+                            latitude = locationResult.getLocations().get(latestLocationIndex).getLatitude();
+                            longitude = locationResult.getLocations().get(latestLocationIndex).getLongitude();
 
                             Geocoder gcd = new Geocoder(getActivity(),
                                     Locale.getDefault());

@@ -24,8 +24,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.coderescue.Activities.SendMessageActivity;
 import com.example.coderescue.Activities.VictimHomeActivity;
 import com.example.coderescue.Classes.NetworkConnectivity;
+import com.example.coderescue.Classes.ReceiveMessageUtility;
+import com.example.coderescue.Classes.SendMessageUtility;
 import com.example.coderescue.R;
 import com.example.coderescue.VictimHomeAdapter;
 import com.example.coderescue.VictimHomeCardModel;
@@ -73,7 +76,7 @@ public class VictimHomeFragment extends Fragment {
 
         prog = root.findViewById(R.id.progressBar2);
         snd = root.findViewById(R.id.snd_msg);
-//        button_send_msg = root.findViewById(R.id.button_send_msg);
+        button_send_msg = root.findViewById(R.id.snd_msg2);
         mRecyclerView = root.findViewById(R.id.recylcerView5);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -84,23 +87,28 @@ public class VictimHomeFragment extends Fragment {
                 snd.setEnabled(false);
             }
         });
-//        button_send_msg.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(getActivity(), SendMessageActivity.class);
-//                startActivity(intent);
-//            }
-//        });
+        button_send_msg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), SendMessageActivity.class);
+                startActivity(intent);
+            }
+        });
         return root;
     }
 
     public void button_click() {
         String toastText = "No internet. Send a message to the helpline instead instead.";
-        if (NetworkConnectivity.isInternetAvailable(getActivity()))
+        if (NetworkConnectivity.isInternetAvailable(getActivity())) {
             toastText = "Internet Available";
-        Toast.makeText(getActivity(), toastText, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), toastText, Toast.LENGTH_SHORT).show();
+        }
+        else
+            Toast.makeText(getActivity(), toastText, Toast.LENGTH_LONG).show();
 
         if (!NetworkConnectivity.isInternetAvailable(getActivity())) {
+            Intent intent = new Intent(getActivity(), SendMessageActivity.class);
+            startActivity(intent);
         } else {
             if (ContextCompat.checkSelfPermission(
                     getActivity(), Manifest.permission.ACCESS_FINE_LOCATION
@@ -110,6 +118,27 @@ public class VictimHomeFragment extends Fragment {
             } else {
                 getCurrentLocation();
             }
+        }
+        ReceiveMessageUtility.checkPermissions(getActivity(), getActivity());
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case SendMessageUtility.REQUEST_CODE_SEND_MESSAGE_PERMISSION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (!NetworkConnectivity.isInternetAvailable(getActivity())) {
+                        SendMessageUtility.sendMessage(getActivity(), getActivity(), "testing send message");
+                    }
+                } else {
+                    Toast.makeText(getActivity(), "You don't have the required permissions for sending text messages", Toast.LENGTH_SHORT).show();
+                }
+            case ReceiveMessageUtility.REQUEST_CODE_RECEIVE_MESSAGE_PERMISSION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //TODO: add code here
+                } else {
+                    Toast.makeText(getActivity(), "You don't have the required permissions for receiving text messages", Toast.LENGTH_SHORT).show();
+                }
         }
     }
 
