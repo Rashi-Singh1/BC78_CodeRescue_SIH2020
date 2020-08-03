@@ -20,12 +20,14 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.coderescue.Activities.CameraWithGoogleMapsActivity;
 import com.example.coderescue.Activities.GoogleMapActivity;
+import com.example.coderescue.Activities.MainDashboardActivity;
 import com.example.coderescue.Activities.RescueTeamLoginActivity;
 import com.example.coderescue.Activities.UpdateInfoActivity;
 import com.example.coderescue.Activities.VictimHomeActivity;
 import com.example.coderescue.Activities.VictimNotifications;
 import com.example.coderescue.Adapters.SectionsPagerAdapter;
 import com.example.coderescue.R;
+import com.example.coderescue.navar.MapsActivity;
 import com.example.coderescue.navar.NavActivity;
 import com.example.coderescue.navar.PoiBrowserActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -211,6 +213,7 @@ public class HomeFragment extends AppCompatActivity {
     public static StitchAppClient client;
     public static String diss_idd;
     private static final int REQUEST_CODE_SPEECH_INPUT = 1000;
+    ImageButton speak_msg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -227,6 +230,8 @@ public class HomeFragment extends AppCompatActivity {
         tile_rescue = findViewById(R.id.tile_rescue);
         tile_third = findViewById(R.id.tile_third);
         tile_notif = findViewById(R.id.tile_notif);
+        speak_msg = findViewById(R.id.voiceBtn5);
+
 
         normal_victim.setOnClickListener(this::onClick);
         normal_rescue.setOnClickListener(this::onClick);
@@ -259,6 +264,13 @@ public class HomeFragment extends AppCompatActivity {
             @Override
             public void onPageScrollStateChanged(int state) {
 
+            }
+        });
+
+        speak_msg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                speak();
             }
         });
     }
@@ -335,6 +347,50 @@ public class HomeFragment extends AppCompatActivity {
 
         tile_notif.setVisibility(View.INVISIBLE);
         normal_notif.setVisibility(View.VISIBLE);
+    }
+
+
+    private void speak(){
+        System.out.println("aagye speak mein");
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Hi speak something");
+
+        try {
+            startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT);
+        }
+        catch (Exception e){
+            Toast.makeText(this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case REQUEST_CODE_SPEECH_INPUT:{
+                if (resultCode == -1 && null!=data){
+                    ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    String spoken = result.get(0);
+                    if(spoken.contains("provide") && spoken.contains("help")){
+                        viewPager.setCurrentItem(2, true);
+                    }
+                    else if(spoken.contains("help") || spoken.contains("need")){
+                        viewPager.setCurrentItem(0, true);
+                    }
+                    else if(spoken.contains("dashboard")){
+                        viewPager.setCurrentItem(3, true);
+
+                    }
+                    else if(spoken.contains("login")){
+                        viewPager.setCurrentItem(1, true);
+                    }
+                }
+            }
+        }
     }
 
     private void enableAnonymousAuth(){
