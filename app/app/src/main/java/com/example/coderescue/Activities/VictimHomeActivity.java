@@ -22,6 +22,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.telephony.TelephonyManager;
 
+import com.example.coderescue.Classes.ReceiveMessageUtility;
+import com.example.coderescue.Classes.SendMessageUtility;
 import com.example.coderescue.Classes.NetworkConnectivity;
 import com.example.coderescue.Fragments.HomeFragment;
 import com.example.coderescue.R;
@@ -106,6 +108,28 @@ public class VictimHomeActivity extends AppCompatActivity {
             }
         }
 //        ReceiveMessageUtility.checkPermissions(getApplicationContext(), VictimHomeActivity.this);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case SendMessageUtility.REQUEST_CODE_SEND_MESSAGE_PERMISSION:
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    if(!NetworkConnectivity.isInternetAvailable(getApplicationContext())){
+                        SendMessageUtility.sendMessage(getApplicationContext(), VictimHomeActivity.this, "testing send message");
+                    }
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "You don't have the required permissions for sending text messages", Toast.LENGTH_SHORT).show();
+                }
+            case ReceiveMessageUtility.REQUEST_CODE_RECEIVE_MESSAGE_PERMISSION:
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    //TODO: add code here
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "You don't have the required permissions for receiving text messages", Toast.LENGTH_SHORT).show();
+                }
+        }
     }
 
     private void getCurrentLocation(){

@@ -22,6 +22,7 @@ import com.example.coderescue.Activities.CameraWithGoogleMapsActivity;
 import com.example.coderescue.Activities.GoogleMapActivity;
 import com.example.coderescue.Activities.MainDashboardActivity;
 import com.example.coderescue.Activities.RescueTeamLoginActivity;
+import com.example.coderescue.Activities.SendMessageActivity;
 import com.example.coderescue.Activities.UpdateInfoActivity;
 import com.example.coderescue.Activities.VictimHomeActivity;
 import com.example.coderescue.Activities.VictimNotifications;

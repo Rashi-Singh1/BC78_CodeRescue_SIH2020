@@ -29,6 +29,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.coderescue.Activities.HomeActivity;
+import com.example.coderescue.Activities.SendMessageActivity;
 import com.example.coderescue.Activities.UpdateInfoActivity;
 import com.example.coderescue.Classes.NetworkConnectivity;
 import com.example.coderescue.R;
@@ -186,6 +187,8 @@ public class UpdateInfoFragment extends Fragment {
         Toast.makeText(getActivity(), toastText, Toast.LENGTH_LONG).show();
 
         if (!NetworkConnectivity.isInternetAvailable(getActivity())) {
+            Intent intent = new Intent(getActivity(), SendMessageActivity.class);
+            startActivity(intent);
         } else {
             int count = Integer.parseInt(victim_count.getText().toString().trim());
 
